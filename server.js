@@ -24,41 +24,6 @@ const EVENT_NAME = {
   APP_CONFIG: "app-config",
 };
 
-const MESSAGE_ALL_CLIENT_SEND = '[{"type":"all"}]';
-
-let connectedClients = [];
-const MARKET_STATUS_INTERVAL = 10000;
-io.on("connection", (socket) => {
-  // gui cho 1 user
-  socket.emit("SUCCESS", "HELLO WOLD - socket simulator connected!");
-
-  socket.on(EVENT_NAME.MARKET_STATUS, (msg) => {
-    if (MESSAGE_ALL_CLIENT_SEND === msg) {
-      connectedClients.push(socket.id);
-    } else {
-      socket.emit("ERROR", "Message emit incorrect format");
-    }
-  });
-
-  setInterval(() => {
-    connectedClients.forEach((clientId) => {
-      Object.values(BOARD).forEach((board)=>{
-        const marketStatus = getRandomMarketStatus(board)
-        io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, marketStatus);
-      })
-    
-    });
-  }, MARKET_STATUS_INTERVAL);
-
-  socket.on("disconnect", () => {
-    console.log("A user disconnected");
-  });
-});
-
-server.listen(5000, () => {
-  console.log("Server is running on port 9000");
-});
-
 const MARKET_STATUS = {
   STARTED: "STARTED",
   ATO: "ATO",
@@ -75,14 +40,58 @@ const BOARD = {
   HOSE: "HOSE",
   HNX: "HNX",
   UPCOM: "UPCOM",
-  DERIVATIVE: "DERIVATIVE",
+  DERIVATIVES: "DERIVATIVES",
   BOND: "BOND",
 };
 
-function getRandomMarketStatus(board) {
+const MESSAGE_ALL_CLIENT_SEND = '[{"type":"all"}]';
+
+let connectedClients = [];
+const MARKET_STATUS_INTERVAL = 10000;
+let intervalMarketStatus = null;
+let indexMarketStatus = 0;
+const boards = Object.values(BOARD);
+io.on("connection", (socket) => {
+  // gui cho 1 user
+  socket.emit("SUCCESS", "HELLO WOLD - socket simulator connected!");
+
+  socket.on(EVENT_NAME.MARKET_STATUS, (msg) => {
+    if (MESSAGE_ALL_CLIENT_SEND === msg) {
+      connectedClients.push(socket.id);
+    } else {
+      socket.emit("ERROR", "Message emit incorrect format");
+    }
+  });
+
+  if (intervalMarketStatus) {
+    clearInterval(intervalMarketStatus);
+    intervalMarketStatus = null;
+  }
+
+  intervalMarketStatus = setInterval(() => {
+    if (indexMarketStatus >= boards.length) {
+      indexMarketStatus = 0;
+    }
+    boards.forEach((board) => {
+      const marketStatus = getRandomMarketStatus(board, indexMarketStatus);
+      io.emit(EVENT_NAME.MARKET_STATUS, marketStatus);
+    });
+    indexMarketStatus++;
+  }, MARKET_STATUS_INTERVAL);
+
+  socket.on("disconnect", () => {
+    console.log("A user disconnected");
+  });
+});
+
+server.listen(5000, () => {
+  console.log("Server is running on port 9000");
+});
+
+
+function getRandomMarketStatus(board, index) {
   const marketStatusBoard = getMarketStatus(board);
-  const indexMarketStatus = Date.now() % marketStatusBoard.length;
-  return marketStatusBoard[indexMarketStatus];
+  return marketStatusBoard[index];
 }
 
 function getMarketStatus(board) {
