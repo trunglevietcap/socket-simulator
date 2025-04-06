@@ -1,71 +1,81 @@
-// server.js
-
-const express = require("express");
-const http = require("http");
-const socketIo = require("socket.io");
-
+import express from "express";
+import { createServer } from "http";
+import protobuf from "protobufjs"; // Import default
+import { PRICE_SOCKET_SAMPLE } from "./src/price.socket.js";
+import {
+  EVENT_NAME,
+  MESSAGE_ALL_CLIENT_SEND,
+  BOARD,
+  MARKET_STATUS_INTERVAL,
+} from "./src/constants.js";
+import { Server } from "socket.io";
+import { getRandomMarketStatus } from "./src/helpers.js";
+const { load } = protobuf;
 const app = express();
-const server = http.createServer(app);
-const io = socketIo(server, {
+const server = createServer(app);
+const io = new Server(server, {
   path: "/ws/price/socket.io",
 });
-
-const EVENT_NAME = {
-  BID_ASK: "bid-ask",
-  MATCH_PRICE: "match-price",
-  ODD_LOT_BID_ASK: "odd-lot-bid-ask",
-  ODD_LOT_MATCH_PRICE: "odd-lot-match-price",
-  INDEX: "index",
-  PUT_THROUGH: "put-through",
-  ADVERTISE: "advertise",
-  BATCH_JOB_STREAMING: "batch-job-streaming",
-  HNX_BOND_PRICE: "hnx-price-new-streaming",
-  MARKET_STATUS: "market-status",
-  APP_CONFIG: "app-config",
-};
-
-const MARKET_STATUS = {
-  STARTED: "STARTED",
-  ATO: "ATO",
-  LO_MORNING: "LO_MORNING",
-  LUNCH_BREAK: "LUNCH_BREAK",
-  LO_AFTERNOON: "LO_AFTERNOON",
-  ATC: "ATC",
-  ENDED: "ENDED",
-  EXTEND_HOUR: "EXTEND_HOUR",
-  CLOSED: "CLOSED",
-};
-
-const BOARD = {
-  HOSE: "HOSE",
-  HNX: "HNX",
-  UPCOM: "UPCOM",
-  DERIVATIVES: "DERIVATIVES",
-  BOND: "BOND",
-};
-
-const MESSAGE_ALL_CLIENT_SEND = '[{"type":"all"}]';
-
-let connectedClients = [];
-const MARKET_STATUS_INTERVAL = 10000;
-let intervalMarketStatus = null;
+let connectedClientsMarketStatus = [];
+let connectedClientsPrice = [];
 let indexMarketStatus = 0;
+let intervalMarketStatus = null;
+let intervalPrice = null;
 const boards = Object.values(BOARD);
+
+let Message;
+load("price.proto", (err, root) => {
+  if (err) throw err;
+  Message = root.lookupType("MatchPriceMessage");
+  // const message = Message.create(PRICE_SOCKET_SAMPLE);
+  // const buffer = Message.encode(message).finish();
+  // socket.emit(EVENT_NAME.MARKET_STATUS, buffer);
+});
+
 io.on("connection", (socket) => {
-  // gui cho 1 user
   socket.emit("SUCCESS", "HELLO WOLD - socket simulator connected!");
+
+  load("price.proto", (err, root) => {
+    if (err) throw err;
+    const Message = root.lookupType("MatchPriceMessage");
+    const message = Message.create(PRICE_SOCKET_SAMPLE);
+    const buffer = Message.encode(message).finish();
+    socket.emit(EVENT_NAME.MARKET_STATUS, buffer);
+  });
 
   socket.on(EVENT_NAME.MARKET_STATUS, (msg) => {
     if (MESSAGE_ALL_CLIENT_SEND === msg) {
-      connectedClients.push(socket.id);
+      connectedClientsMarketStatus.push(socket.id);
     } else {
       socket.emit("ERROR", "Message emit incorrect format");
+    }
+  });
+
+  socket.on(EVENT_NAME.MATCH_PRICE, (msg) => {
+    if (msg) {
+      try {
+        const data = JSON.parse(msg);
+        if (data?.symbols?.length && Array.isArray(data?.symbols)) {
+          connectedClientsPrice.push({
+            id: socket.id,
+            symbols: data?.symbols || [],
+          });
+        }
+      } catch (error) {
+        socket.emit("ERROR", "Message emit incorrect format");
+      }
+    } else {
+      socket.emit("ERROR", "Message empty");
     }
   });
 
   if (intervalMarketStatus) {
     clearInterval(intervalMarketStatus);
     intervalMarketStatus = null;
+  }
+  if (intervalPrice) {
+    clearInterval(intervalPrice);
+    intervalPrice = null;
   }
 
   intervalMarketStatus = setInterval(() => {
@@ -79,28 +89,39 @@ io.on("connection", (socket) => {
     indexMarketStatus++;
   }, MARKET_STATUS_INTERVAL);
 
+  intervalPrice = setInterval(() => {
+    if (Message) {
+      let random = +(Math.random() * 100).toFixed(0);
+      random = random % 2 === 0 ? random : -random;
+      const price = {
+        ...PRICE_SOCKET_SAMPLE,
+        matchPrice: PRICE_SOCKET_SAMPLE.matchPrice + random,
+      };
+      const message = Message.create(price);
+      const buffer = Message.encode(message).finish();
+      connectedClientsPrice.forEach((client) => {
+        if (!client?.symbols?.length) {
+          connectedClientsPrice.splice(index, 1);
+        } else if (client.symbols.includes(price.symbol)) {
+          io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
+        }
+      });
+    }
+  }, 1000);
+
   socket.on("disconnect", () => {
     console.log("A user disconnected");
+    connectedClientsMarketStatus = connectedClientsMarketStatus.filter(
+      (id) => socket.id !== id
+    );
+    connectedClientsPrice = connectedClientsPrice.filter(
+      (item) => socket.id !== item.id
+    );
   });
 });
 
 server.listen(5000, () => {
   console.log("Server is running on port 5000");
 });
-
-
-function getRandomMarketStatus(board, index) {
-  const marketStatusBoard = getMarketStatus(board);
-  return marketStatusBoard[index];
-}
-
-function getMarketStatus(board) {
-  return Object.values(MARKET_STATUS).map((status) => ({
-    marketCode: board,
-    messageType: "SC",
-    receivedTime: new Date().toString(),
-    status,
-  }));
-}
 
 // http://localhost:5000/

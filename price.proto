@@ -1,0 +1,168 @@
+package pricePackage;
+syntax = "proto3";
+
+message IndexMessage {
+    string code = 1;
+    string symbol = 2;
+    double price = 3;
+    double change = 4;
+    double changePercent = 5;
+    double totalShares = 6;
+    double totalValue = 7;
+
+    double totalStockIncrease = 8;
+    double totalStockDecline = 9;
+    double totalStockNoChange = 10;
+    double totalStockCeiling = 11;
+    double totalStockFloor = 12;
+    double estimatedChange = 13;
+    double estimatedFsp = 14;
+    string time  = 15;
+}
+
+//------------------------------------------------//
+
+message MatchPriceMessage {
+    string type = 1;
+    string code = 2;
+    string symbol = 3;
+    double matchPrice = 4;
+    double matchVol = 5;
+    double highest = 6;
+    double lowest = 7;
+    double foreignBuyVolume = 8;
+    double foreignSellVolume = 9;
+    double foreignBuyValue = 10;
+    double foreignSellValue = 11;
+    string session = 12;
+    double referencePrice = 13;
+    double ceilingPrice = 14;
+    double floorPrice = 15;
+    double accumulatedVolume = 16;
+    double avgMatchPrice  = 17;
+
+    string time  = 18;
+    double openPrice = 19;
+
+    double totalBuyOrders = 20;
+    double totalSellOrders = 21;
+    double currentRoom=22;
+    double totalRoom=23;
+    double accumulatedValue=24;
+    string matchType=25;
+    double bidCount = 29;
+    double askCount = 30;
+}
+
+message OddLotMatchPriceMessage{
+    string code = 1;
+    string symbol = 2;
+    double matchPrice = 3;
+    double matchVol = 4;
+    double matchType = 5;
+}
+
+message FutureMatchPrice {
+    //-- extend MatchPriceMessage --//
+    string type = 1;
+    string code = 2;
+    string symbol = 3;
+    double matchPrice = 4;
+    double matchVol = 5;
+    double highest = 6;
+    double lowest = 7;
+    double foreignBuyVolume = 8;
+    double foreignSellVolume = 9;
+    double foreignBuyValue = 10;
+    double foreignSellValue = 11;
+    string session = 12;
+    double referencePrice = 13;
+    double ceilingPrice = 14;
+    double floorPrice = 15;
+    double accumulatedVolume = 16;
+    double avgMatchPrice  = 17;
+    string time  = 18;
+    double openPrice = 19;
+    double totalBuyOrders = 20;
+    double totalSellOrders = 21;
+    double currentRoom=22;
+    double totalRoom=23;
+    double accumulatedValue=24;
+    string matchType=25;
+    //--//
+    string firstTradingDate = 26;
+    string lastTradingDate = 27;
+    double openInterest = 28;
+    double bidCount = 29;
+    double askCount = 30;
+}
+//------------------------------------------------//
+
+message BidAskPrice {
+    double price = 1;
+    double volume = 2;
+}
+
+
+message BidAskMessage {
+    string type = 1;
+    string code = 2;
+    string symbol = 3;
+
+    repeated BidAskPrice bidPrices = 4;
+    repeated BidAskPrice askPrices = 5;
+
+    string session= 6 ;
+}
+
+
+message OddLotBidAskMessage {
+    string type = 1;
+    string code = 2;
+    string symbol = 3;
+
+    repeated BidAskPrice bidPrices = 4;
+    repeated BidAskPrice askPrices = 5;
+
+    string session= 6 ;
+}
+
+message PutThroughMessage {
+    string code = 1;
+    string symbol = 2;
+
+    double ptMatchPrice = 3;
+    double ptChange = 4;
+    double ptChangePercent = 5;
+    double ptMatchValue = 6;
+    double ptMatchVolume = 7;
+    double ptAccumulatedValue =8;
+    double ptAccumulatedVolume = 9;
+}
+
+message AdvertiseMessage {
+    string code = 1;
+    string symbol = 2;
+
+    double price = 3;
+    double volume = 4;
+    string time = 5;
+    string flag = 6;
+    string side = 7;
+    double firm = 8;
+    double trader = 9;
+    
+}
+
+message GlobalPriceMessage {
+    string id = 1;
+    string exchange = 2;
+    double quoteType = 3;
+    double price = 4;
+    double timestamp = 5;
+    double marketHours =6;
+    double changePercent = 7;
+    double dayVolume = 8;
+    double change=9;
+    double priceHint=10;
+}
