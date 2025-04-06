@@ -42,9 +42,11 @@ io.on("connection", (socket) => {
 
   setInterval(() => {
     connectedClients.forEach((clientId) => {
-      const marketStatus = getRandomMarketStatus();
-      console.log(EVENT_NAME.MARKET_STATUS, marketStatus);
-      io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, marketStatus);
+      Object.values(BOARD).forEach((board)=>{
+        const marketStatus = getRandomMarketStatus(board)
+        io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, marketStatus);
+      })
+    
     });
   }, MARKET_STATUS_INTERVAL);
 
@@ -77,11 +79,8 @@ const BOARD = {
   BOND: "BOND",
 };
 
-function getRandomMarketStatus() {
-  const boards = Object.values(BOARD);
-  const indexBoardRandom = +(Math.random() * 10000).toFixed(0) % boards.length;
-  const boardRandom = boards[indexBoardRandom];
-  const marketStatusBoard = getMarketStatus(boardRandom);
+function getRandomMarketStatus(board) {
+  const marketStatusBoard = getMarketStatus(board);
   const indexMarketStatus = Date.now() % marketStatusBoard.length;
   return marketStatusBoard[indexMarketStatus];
 }
