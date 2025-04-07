@@ -27,21 +27,10 @@ let Message;
 load("price.proto", (err, root) => {
   if (err) throw err;
   Message = root.lookupType("MatchPriceMessage");
-  // const message = Message.create(PRICE_SOCKET_SAMPLE);
-  // const buffer = Message.encode(message).finish();
-  // socket.emit(EVENT_NAME.MARKET_STATUS, buffer);
 });
 
 io.on("connection", (socket) => {
   socket.emit("SUCCESS", "HELLO WOLD - socket simulator connected!");
-
-  load("price.proto", (err, root) => {
-    if (err) throw err;
-    const Message = root.lookupType("MatchPriceMessage");
-    const message = Message.create(PRICE_SOCKET_SAMPLE);
-    const buffer = Message.encode(message).finish();
-    socket.emit(EVENT_NAME.MARKET_STATUS, buffer);
-  });
 
   socket.on(EVENT_NAME.MARKET_STATUS, (msg) => {
     if (MESSAGE_ALL_CLIENT_SEND === msg) {
