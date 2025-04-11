@@ -13,10 +13,6 @@ export function getRandomMarketStatus(board, index) {
   return marketStatusBoard[index];
 }
 
-
-
 export const getPriceRandom = () => {
-  return SYMBOLS_PRICE.map(()=>{
-
-  })
+  return SYMBOLS_PRICE.map(() => {});
 };

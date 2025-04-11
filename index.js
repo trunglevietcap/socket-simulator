@@ -10,6 +10,7 @@ import {
 } from "./src/constants.js";
 import { Server } from "socket.io";
 import { getRandomMarketStatus } from "./src/helpers.js";
+import { PriceSocketService } from "./src/price/index.js";
 const { load } = protobuf;
 const app = express();
 const server = createServer(app);
@@ -22,8 +23,11 @@ let indexMarketStatus = 0;
 let intervalMarketStatus = null;
 let intervalPrice = null;
 const boards = Object.values(BOARD);
+const priceInfoService = PriceSocketService();
 
 let Message;
+
+let priceInfo = {};
 load("price.proto", (err, root) => {
   if (err) throw err;
   Message = root.lookupType("MatchPriceMessage");
@@ -45,6 +49,7 @@ io.on("connection", (socket) => {
       try {
         const data = JSON.parse(msg);
         if (data?.symbols?.length && Array.isArray(data?.symbols)) {
+          priceInfoService.handleGetPrice(data?.symbols);
           connectedClientsPrice.push({
             id: socket.id,
             symbols: data?.symbols || [],
@@ -67,36 +72,31 @@ io.on("connection", (socket) => {
     intervalPrice = null;
   }
 
-  intervalMarketStatus = setInterval(() => {
-    if (indexMarketStatus >= boards.length) {
-      indexMarketStatus = 0;
-    }
-    boards.forEach((board) => {
-      const marketStatus = getRandomMarketStatus(board, indexMarketStatus);
-      io.emit(EVENT_NAME.MARKET_STATUS, marketStatus);
-    });
-    indexMarketStatus++;
-  }, MARKET_STATUS_INTERVAL);
+  // intervalMarketStatus = setInterval(() => {
+  //   if (indexMarketStatus >= boards.length) {
+  //     indexMarketStatus = 0;
+  //   }
+  //   boards.forEach((board) => {
+  //     const marketStatus = getRandomMarketStatus(board, indexMarketStatus);
+  //     io.emit(EVENT_NAME.MARKET_STATUS, marketStatus);
+  //   });
+  //   indexMarketStatus++;
+  // }, MARKET_STATUS_INTERVAL);
 
   intervalPrice = setInterval(() => {
-    if (Message) {
-      let random = +(Math.random() * 100).toFixed(0);
-      random = random % 2 === 0 ? random : -random;
-      const price = {
-        ...PRICE_SOCKET_SAMPLE,
-        matchPrice: PRICE_SOCKET_SAMPLE.matchPrice + random,
-      };
-      const message = Message.create(price);
+    const priceRandom = priceInfoService.getRandomPrice();
+    if ((Message, priceRandom)) {
+      const message = Message.create(priceRandom);
       const buffer = Message.encode(message).finish();
       connectedClientsPrice.forEach((client) => {
         if (!client?.symbols?.length) {
           connectedClientsPrice.splice(index, 1);
-        } else if (client.symbols.includes(price.symbol)) {
+        } else if ( client.symbols && client.symbols.includes(priceRandom.symbol)) {
           io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
         }
       });
     }
-  }, 1000);
+  }, 10);
 
   socket.on("disconnect", () => {
     console.log("A user disconnected");
@@ -112,5 +112,3 @@ io.on("connection", (socket) => {
 server.listen(8080, () => {
   console.log("Server is running on port 8080");
 });
-
-// http://localhost:8080
