@@ -96,7 +96,7 @@ io.on("connection", (socket) => {
         }
       });
     }
-  }, 7);
+  }, 8);
 
   socket.on("disconnect", () => {
     console.log("A user disconnected");
