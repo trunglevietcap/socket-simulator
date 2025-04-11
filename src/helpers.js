@@ -4,7 +4,7 @@ export function getMarketStatus(board) {
     marketCode: board,
     messageType: "SC",
     receivedTime: new Date().toString(),
-    status,
+    status: "ENDED",
   }));
 }
 
@@ -12,3 +12,11 @@ export function getRandomMarketStatus(board, index) {
   const marketStatusBoard = getMarketStatus(board);
   return marketStatusBoard[index];
 }
+
+
+
+export const getPriceRandom = () => {
+  return SYMBOLS_PRICE.map(()=>{
+
+  })
+};

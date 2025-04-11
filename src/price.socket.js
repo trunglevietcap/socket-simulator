@@ -23,4 +23,12 @@ const PRICE_SOCKET_SAMPLE = {
   partition: 4,
 };
 
+const SYMBOLS_PRICE = [
+  {
+    symbol: "VCI",
+    price: 35000,
+    board: 'HNX',
+  },
+];
+
 export { PRICE_SOCKET_SAMPLE };
