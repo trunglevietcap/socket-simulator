@@ -1,4 +1,8 @@
-import {HOSE_PRICE_STEP, BOARD, HNX_UPCOM_PRICE_STEP} from './../constants.js'
+import {
+  HOSE_PRICE_STEP,
+  BOARD,
+  HNX_UPCOM_PRICE_STEP,
+} from "./../constants.js";
 export const PriceSocketService = () => {
   const _priceInfo = {};
 
@@ -16,11 +20,17 @@ export const PriceSocketService = () => {
     return +(Math.random() * 10000).toFixed(0) % maxPercent;
   };
 
-  const _randomValue = (currentValue, maxPercent = 5, probability = 100) => {
+  const randomValue = (
+    currentValue,
+    maxPercent = 5,
+    probability = 100,
+    isSign = false
+  ) => {
+    const sign = isSign ? _randomSign() : 1;
     const randomProbability = _randomPercent(100);
     if (randomProbability > probability) return currentValue;
     const randomPercent = _randomPercent(maxPercent);
-    return +((currentValue * (100 + randomPercent)) / 100).toFixed(0);
+    return +((currentValue * (100 + randomPercent * sign)) / 100).toFixed(0);
   };
 
   const _randomPrice = (symbolRandom, probability = 100) => {
@@ -45,23 +55,23 @@ export const PriceSocketService = () => {
     return randomPrice;
   };
 
-  const _handleGetRandomPrice = (symbolRandom) => {
+  const _handleGetRandomPrice = (symbolRandom, probability = 100) => {
     const priceInfo = _priceInfo[symbolRandom];
-    const accumulatedVolume = _randomValue(
+    const accumulatedVolume = randomValue(
       priceInfo.matchPrice.accumulatedVolume,
       2,
-      50
+      probability / 2
     );
     const matchPrice = _randomPrice(priceInfo.listingInfo.symbol);
-    const foreignBuyVolume = _randomValue(
+    const foreignBuyVolume = randomValue(
       priceInfo.matchPrice.foreignBuyVolume,
       2,
-      20
+      probability / 5
     );
-    const foreignSellVolume = _randomValue(
+    const foreignSellVolume = randomValue(
       priceInfo.matchPrice.foreignBuyVolume,
       2,
-      20
+      probability / 5
     );
 
     const lowest =
@@ -76,7 +86,7 @@ export const PriceSocketService = () => {
       ...priceInfo,
       matchPrice: {
         ...priceInfo.matchPrice,
-        matchPrice: _randomPrice(priceInfo.listingInfo.symbol),
+        matchPrice: _randomPrice(priceInfo.listingInfo.symbol, probability),
         accumulatedVolume: accumulatedVolume,
         accumulatedValue: +(accumulatedVolume * matchPrice).toFixed(0),
         highest,
@@ -88,14 +98,14 @@ export const PriceSocketService = () => {
     return _priceInfo[symbolRandom].matchPrice;
   };
 
-  const _randomBidAsk = (bidAskPrices) => {
+  const _randomBidAsk = (bidAskPrices, probability = 20) => {
     return (bidAskPrices || []).map((item) => ({
       ...item,
-      volume: _randomValue(item.volume, 2, 20),
+      volume: randomValue(item.volume, 2, probability),
     }));
   };
 
-  const _handleGetRandomBidAsk = (symbolRandom) => {
+  const _handleGetRandomBidAsk = (symbolRandom, probability) => {
     const priceInfo = _priceInfo[symbolRandom];
     const bidPrices = priceInfo.bidAsk.bidPrices;
     const askPrices = priceInfo.bidAsk.askPrices;
@@ -103,8 +113,8 @@ export const PriceSocketService = () => {
       ..._priceInfo[symbolRandom],
       bidAsk: {
         ..._priceInfo[symbolRandom].bidAsk,
-        bidPrices: _randomBidAsk(bidPrices),
-        askPrices: _randomBidAsk(askPrices),
+        bidPrices: _randomBidAsk(bidPrices, probability),
+        askPrices: _randomBidAsk(askPrices, probability),
       },
     };
     return _priceInfo[symbolRandom].bidAsk;
@@ -143,21 +153,21 @@ export const PriceSocketService = () => {
     return Object.keys(_priceInfo);
   };
 
-  const getRandomPrice = () => {
-    const symbolsSubscription = getSymbolsSubscription();
+  const getRandomPrice = (probability) => {
+    const symbolsSubscription = getSymbolsSubscription(probability);
     const length = symbolsSubscription.length;
     if (length) {
       const listRandom = [];
       for (let index = 0; index < length; index++) {
         const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
         const symbolRandom = symbolsSubscription[indexRandom];
-        listRandom.push(_handleGetRandomPrice(symbolRandom));
+        listRandom.push(_handleGetRandomPrice(symbolRandom, probability));
       }
       return listRandom;
     }
   };
 
-  const getRandomBidAsk = () => {
+  const getRandomBidAsk = (probability) => {
     const symbolsSubscription = getSymbolsSubscription();
     const length = symbolsSubscription.length;
     if (length) {
@@ -165,7 +175,7 @@ export const PriceSocketService = () => {
       for (let index = 0; index < length; index++) {
         const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
         const symbolRandom = symbolsSubscription[indexRandom];
-        listRandom.push(_handleGetRandomBidAsk(symbolRandom));
+        listRandom.push(_handleGetRandomBidAsk(symbolRandom, probability));
       }
       return listRandom;
     }
@@ -175,7 +185,8 @@ export const PriceSocketService = () => {
     getPriceInfo,
     getSymbolsSubscription,
     getRandomPrice,
-    getRandomBidAsk
+    getRandomBidAsk,
+    randomValue,
   };
 };
 
