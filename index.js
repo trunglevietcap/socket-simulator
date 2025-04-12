@@ -1,13 +1,14 @@
 import express from "express";
 import { createServer } from "http";
 import protobuf from "protobufjs"; // Import default
-import { EVENT_NAME, MESSAGE_ALL_CLIENT_SEND } from "./src/constants.js";
+import {
+  EVENT_NAME,
+  MESSAGE_ALL_CLIENT_SEND,
+  MARKET_STATUS_INTERVAL,
+} from "./src/constants.js";
 import { Server } from "socket.io";
 import { PriceSocketService } from "./src/price/index.js";
-import {
-  MarketStatusSocketService,
-  MARKET_STATUS_INTERVAL,
-} from "./src/market-status/index.js";
+import { MarketStatusSocketService } from "./src/market-status/index.js";
 const { load } = protobuf;
 const app = express();
 const server = createServer(app);

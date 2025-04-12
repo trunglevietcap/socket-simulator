@@ -12,5 +12,34 @@ export const EVENT_NAME = {
   APP_CONFIG: "app-config",
 };
 
+export const BOARD = {
+  HOSE: "HOSE",
+  HNX: "HNX",
+  UPCOM: "UPCOM",
+  DERIVATIVES: "DERIVATIVES",
+  BOND: "BOND",
+};
+
 export const MESSAGE_ALL_CLIENT_SEND = '[{"type":"all"}]';
 
+export const MARKET_STATUS = {
+  STARTED: "STARTED",
+  ATO: "ATO",
+  LO_MORNING: "LO_MORNING",
+  LUNCH_BREAK: "LUNCH_BREAK",
+  LO_AFTERNOON: "LO_AFTERNOON",
+  ATC: "ATC",
+  ENDED: "ENDED",
+  EXTEND_HOUR: "EXTEND_HOUR",
+  CLOSED: "CLOSED",
+};
+
+export const MARKET_STATUS_INTERVAL = 1000;
+
+export const HNX_UPCOM_PRICE_STEP = 100;
+
+export const HOSE_PRICE_STEP = {
+  stepFirst: { min: 0, max: 10_000, step: 10 },
+  stepSecond: { min: 10_000, max: 49_950, step: 50 },
+  stepThird: { min: 49_950, step: 100 },
+};

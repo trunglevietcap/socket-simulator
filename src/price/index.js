@@ -1,9 +1,4 @@
-export const HNX_UPCOM_PRICE_STEP = 100;
-export const HOSE_PRICE_STEP = {
-  stepFirst: { min: 0, max: 10_000, step: 10 },
-  stepSecond: { min: 10_000, max: 49_950, step: 50 },
-  stepThird: { min: 49_950, step: 100 },
-};
+import {HOSE_PRICE_STEP, BOARD, HNX_UPCOM_PRICE_STEP} from './../constants.js'
 export const PriceSocketService = () => {
   const _priceInfo = {};
 
@@ -36,7 +31,7 @@ export const PriceSocketService = () => {
     const board = priceInfo?.listingInfo.board;
     Object.values(HOSE_PRICE_STEP);
     const stepPrice =
-      board === "HOSE"
+      board === BOARD.HOSE
         ? Object.values(HOSE_PRICE_STEP).find(
             (item) => item.min <= matchPrice && item.max > matchPrice
           ).step

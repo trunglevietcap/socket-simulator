@@ -1,23 +1,4 @@
-export const MARKET_STATUS = {
-  STARTED: "STARTED",
-  ATO: "ATO",
-  LO_MORNING: "LO_MORNING",
-  LUNCH_BREAK: "LUNCH_BREAK",
-  LO_AFTERNOON: "LO_AFTERNOON",
-  ATC: "ATC",
-  ENDED: "ENDED",
-  EXTEND_HOUR: "EXTEND_HOUR",
-  CLOSED: "CLOSED",
-};
-export const MARKET_STATUS_INTERVAL = 1000;
-
-export const BOARD = {
-  HOSE: "HOSE",
-  HNX: "HNX",
-  UPCOM: "UPCOM",
-  DERIVATIVES: "DERIVATIVES",
-  BOND: "BOND",
-};
+import { MARKET_STATUS, BOARD } from "./../constants.js";
 export const MarketStatusSocketService = () => {
   let _marketStatus = [];
 
