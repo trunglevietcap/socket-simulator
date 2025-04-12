@@ -33,13 +33,10 @@ export const PriceSocketService = () => {
           ).step
         : HNX_UPCOM_PRICE_STEP;
     const randomSign = _randomSign();
-    if (matchPrice <= floor && randomSign < 0) {
-      return floor;
-    }
-    if (matchPrice >= ceil && randomSign > 0) {
-      return ceil;
-    }
-    return matchPrice + stepPrice * randomSign;
+    const randomPrice = matchPrice + stepPrice * randomSign;
+    if(randomPrice > ceil) return ceil
+    if(randomPrice < floor) return floor
+    return randomPrice
   };
 
   const _handleGetRandomPrice = (symbolRandom) => {
@@ -91,9 +88,13 @@ export const PriceSocketService = () => {
     const symbolsSubscription = getSymbolsSubscription();
     const length = symbolsSubscription.length;
     if (length) {
-      const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
-      const symbolRandom = symbolsSubscription[indexRandom];
-      return _handleGetRandomPrice(symbolRandom);
+      const listRandom = [];
+      for (let index = 0; index < length; index++) {
+        const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
+        const symbolRandom = symbolsSubscription[indexRandom];
+        listRandom.push(_handleGetRandomPrice(symbolRandom));
+      }
+      return listRandom;
     }
   };
 

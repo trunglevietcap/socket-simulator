@@ -6,10 +6,8 @@ import {
   EVENT_NAME,
   MESSAGE_ALL_CLIENT_SEND,
   BOARD,
-  MARKET_STATUS_INTERVAL,
 } from "./src/constants.js";
 import { Server } from "socket.io";
-import { getRandomMarketStatus } from "./src/helpers.js";
 import { PriceSocketService } from "./src/price/index.js";
 const { load } = protobuf;
 const app = express();
@@ -19,13 +17,12 @@ const io = new Server(server, {
 });
 let connectedClientsMarketStatus = [];
 let connectedClientsPrice = [];
-let indexMarketStatus = 0;
 let intervalMarketStatus = null;
 let intervalPrice = null;
 const boards = Object.values(BOARD);
 const priceInfoService = PriceSocketService();
-
 let Message;
+const MARKET_STATUS_INTERVAL = 20000;
 
 let priceInfo = {};
 load("price.proto", (err, root) => {
@@ -84,19 +81,28 @@ io.on("connection", (socket) => {
   // }, MARKET_STATUS_INTERVAL);
 
   intervalPrice = setInterval(() => {
-    const priceRandom = priceInfoService.getRandomPrice();
-    if ((Message, priceRandom)) {
-      const message = Message.create(priceRandom);
-      const buffer = Message.encode(message).finish();
-      connectedClientsPrice.forEach((client) => {
-        if (!client?.symbols?.length) {
-          connectedClientsPrice.splice(index, 1);
-        } else if ( client.symbols && client.symbols.includes(priceRandom.symbol)) {
-          io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
+    const listPrice = priceInfoService.getRandomPrice(20);
+    if(listPrice) {
+      listPrice.forEach(item=>{
+        if ((Message, item)) {
+          const message = Message.create(item);
+          const buffer = Message.encode(message).finish();
+          connectedClientsPrice.forEach((client) => {
+            if (!client?.symbols?.length) {
+              connectedClientsPrice.splice(index, 1);
+            } else if ( client.symbols && client.symbols.includes(item.symbol)) {
+              setTimeout(()=>{
+
+                io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
+              }, Math.random() * 1000)
+            }
+          });
         }
-      });
+      })
     }
-  }, 8);
+  
+
+  }, 1000);
 
   socket.on("disconnect", () => {
     console.log("A user disconnected");
