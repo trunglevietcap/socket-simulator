@@ -34,4 +34,3 @@ export const BOARD = {
 
 export const MESSAGE_ALL_CLIENT_SEND = '[{"type":"all"}]';
 
-export const MARKET_STATUS_INTERVAL = 10000;

@@ -1,14 +1,10 @@
 import express from "express";
 import { createServer } from "http";
 import protobuf from "protobufjs"; // Import default
-import { PRICE_SOCKET_SAMPLE } from "./src/price.socket.js";
-import {
-  EVENT_NAME,
-  MESSAGE_ALL_CLIENT_SEND,
-  BOARD,
-} from "./src/constants.js";
+import { EVENT_NAME, MESSAGE_ALL_CLIENT_SEND } from "./src/constants.js";
 import { Server } from "socket.io";
 import { PriceSocketService } from "./src/price/index.js";
+import { MarketStatusSocketService, MARKET_STATUS_INTERVAL } from "./src/market-status/index.js";
 const { load } = protobuf;
 const app = express();
 const server = createServer(app);
@@ -19,12 +15,10 @@ let connectedClientsMarketStatus = [];
 let connectedClientsPrice = [];
 let intervalMarketStatus = null;
 let intervalPrice = null;
-const boards = Object.values(BOARD);
 const priceInfoService = PriceSocketService();
+const marketStatusService = MarketStatusSocketService();
 let Message;
-const MARKET_STATUS_INTERVAL = 20000;
 
-let priceInfo = {};
 load("price.proto", (err, root) => {
   if (err) throw err;
   Message = root.lookupType("MatchPriceMessage");
@@ -80,40 +74,42 @@ io.on("connection", (socket) => {
   //   indexMarketStatus++;
   // }, MARKET_STATUS_INTERVAL);
 
-  intervalPrice = setInterval(() => {
-    const listPrice = priceInfoService.getRandomPrice(20);
-    if(listPrice) {
-      listPrice.forEach(item=>{
-        if ((Message, item)) {
-          const message = Message.create(item);
-          const buffer = Message.encode(message).finish();
-          connectedClientsPrice.forEach((client) => {
-            if (!client?.symbols?.length) {
-              connectedClientsPrice.splice(index, 1);
-            } else if ( client.symbols && client.symbols.includes(item.symbol)) {
-              setTimeout(()=>{
-
-                io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
-              }, Math.random() * 1000)
-            }
-          });
-        }
-      })
-    }
-  
-
-  }, 1000);
-
   socket.on("disconnect", () => {
     console.log("A user disconnected");
     connectedClientsMarketStatus = connectedClientsMarketStatus.filter(
       (id) => socket.id !== id
     );
     connectedClientsPrice = connectedClientsPrice.filter(
-      (item) => socket.id !== item.id
+      (item) => socket.id !== item.id && !item?.symbols?.length
     );
   });
 });
+
+setInterval(() => {
+  const listPrice = priceInfoService.getRandomPrice(20);
+  if (listPrice) {
+    listPrice.forEach((item) => {
+      if ((Message, item)) {
+        const message = Message.create(item);
+        const buffer = Message.encode(message).finish();
+        connectedClientsPrice.forEach((client) => {
+          if (client.symbols && client.symbols.includes(item.symbol)) {
+            setTimeout(() => {
+              io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
+            }, Math.random() * 500);
+          }
+        });
+      }
+    });
+  }
+}, 1000);
+
+setInterval(() => {
+  const radomMarketStatusList = marketStatusService.getRandomMarketStatus();
+  radomMarketStatusList.forEach((marketStatus) => {
+    io.emit(EVENT_NAME.MARKET_STATUS, marketStatus);
+  });
+}, MARKET_STATUS_INTERVAL);
 
 server.listen(8080, () => {
   console.log("Server is running on port 8080");
