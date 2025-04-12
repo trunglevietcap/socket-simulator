@@ -119,7 +119,7 @@ setInterval(() => {
       }
     });
   }
-}, 1000);
+}, 300);
 
 setInterval(() => {
   const listBidAsk = priceInfoService.getRandomBidAsk();
@@ -138,7 +138,7 @@ setInterval(() => {
       }
     });
   }
-}, 1000);
+}, 300);
 setInterval(() => {
   const radomMarketStatusList = marketStatusService.getRandomMarketStatus();
   radomMarketStatusList.forEach((marketStatus) => {

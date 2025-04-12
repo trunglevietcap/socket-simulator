@@ -23,9 +23,11 @@ export const PriceSocketService = () => {
     return +((currentValue * (100 + randomPercent)) / 100).toFixed(0);
   };
 
-  const _randomPrice = (symbolRandom) => {
+  const _randomPrice = (symbolRandom, probability = 100) => {
+    const randomProbability = _randomPercent(100);
     const priceInfo = _priceInfo[symbolRandom];
     const matchPrice = priceInfo.matchPrice.matchPrice;
+    if (randomProbability > probability) return matchPrice;
     const floor = priceInfo.listingInfo.floor;
     const ceil = priceInfo.listingInfo.ceiling;
     const board = priceInfo?.listingInfo.board;
