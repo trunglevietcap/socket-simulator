@@ -29,8 +29,8 @@ const RANDOM_TIME_DEFAULT = {
 };
 
 const SPEED_PRICE_DEFAULT = {
-  matchPrice: 20,
-  bidAsk: 20,
+  matchPrice: 100,
+  bidAsk: 100,
   marketStatus: 100,
 };
 
@@ -67,12 +67,14 @@ io.on("connection", (socket) => {
         if (data?.symbols?.length && Array.isArray(data?.symbols)) {
           priceInfoService.handleGetPrice(data?.symbols);
 
-          // console.log(connectedClientsPrice.length)
+  
           connectedClientsPrice = connectedClientsPrice.filter(item=>item.id !== socket.id)
           connectedClientsPrice.push({
             id: socket.id,
             symbols: data?.symbols || [],
           });
+          console.log('--------------------------')
+          console.log(connectedClientsPrice)
         }
       } catch (error) {
         socket.emit("ERROR", "Message emit incorrect format");
@@ -118,24 +120,24 @@ server.listen(8080, () => {
   console.log("Server is listening");
 });
 
-setInterval(() => {
-  const randomNumber = +(Math.random() * 10000).toFixed(0) % 100;
-  const random3 = +(Math.random() * 10000).toFixed(0) % 10;
-  if (random3 < 7) {
-    speedPrice = {
-      matchPrice: 5,
-      bidAsk: 5,
-      marketStatus: 100,
-    };
-  } else {
-    speedPrice = {
-      matchPrice: randomNumber < 5 ? 5 :randomNumber,
-      bidAsk: randomNumber < 5 ? 5 :randomNumber,
-      marketStatus: 100,
-    };
-  }
-  setIntervalSocket(speedPrice);
-}, TIME_OUT_UPDATE_SPEED);
+// setInterval(() => {
+//   const randomNumber = +(Math.random() * 10000).toFixed(0) % 100;
+//   const random3 = +(Math.random() * 10000).toFixed(0) % 10;
+//   if (random3 < 7) {
+//     speedPrice = {
+//       matchPrice: 5,
+//       bidAsk: 5,
+//       marketStatus: 100,
+//     };
+//   } else {
+//     speedPrice = {
+//       matchPrice: randomNumber < 5 ? 5 :randomNumber,
+//       bidAsk: randomNumber < 5 ? 5 :randomNumber,
+//       marketStatus: 100,
+//     };
+//   }
+//   setIntervalSocket(speedPrice);
+// }, TIME_OUT_UPDATE_SPEED);
 
 setIntervalSocket();
 function setIntervalSocket() {
@@ -150,9 +152,7 @@ function setIntervalSocket() {
           // console.log('item', item)
           connectedClientsPrice.forEach((client) => {
             if (client.symbols && client.symbols.includes(item.symbol)) {
-              setTimeout(() => {
-                io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
-              }, Math.random() * 500);
+              io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
             }
           });
         }
@@ -169,9 +169,7 @@ function setIntervalSocket() {
           const buffer = BidAskMessage.encode(message).finish();
           connectedClientsBidAsk.forEach((client) => {
             if (client.symbols && client.symbols.includes(item.symbol)) {
-              setTimeout(() => {
-                io.to(client.id).emit(EVENT_NAME.BID_ASK, buffer);
-              }, Math.random() * 500);
+              io.to(client.id).emit(EVENT_NAME.BID_ASK, buffer);
             }
           });
         }
