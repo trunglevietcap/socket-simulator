@@ -59,19 +59,19 @@ export const PriceSocketService = () => {
     const priceInfo = _priceInfo[symbolRandom];
     const accumulatedVolume = randomValue(
       priceInfo.matchPrice.accumulatedVolume,
-      1,
-      probability / 2
+      2,
+      10
     );
     const matchPrice = _randomPrice(priceInfo.listingInfo.symbol);
     const foreignBuyVolume = randomValue(
       priceInfo.matchPrice.foreignBuyVolume,
-      1,
-      probability / 5
+      2,
+      10
     );
     const foreignSellVolume = randomValue(
       priceInfo.matchPrice.foreignBuyVolume,
-      1,
-      probability / 5
+      2,
+      10
     );
 
     const lowest =
