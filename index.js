@@ -4,7 +4,10 @@ import protobuf from "protobufjs"; // Import default
 import { EVENT_NAME, MESSAGE_ALL_CLIENT_SEND } from "./src/constants.js";
 import { Server } from "socket.io";
 import { PriceSocketService } from "./src/price/index.js";
-import { MarketStatusSocketService, MARKET_STATUS_INTERVAL } from "./src/market-status/index.js";
+import {
+  MarketStatusSocketService,
+  MARKET_STATUS_INTERVAL,
+} from "./src/market-status/index.js";
 const { load } = protobuf;
 const app = express();
 const server = createServer(app);
@@ -54,6 +57,10 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on(EVENT_NAME.BID_ASK, (msg) => {
+    // console.log(msg)
+  });
+
   if (intervalMarketStatus) {
     clearInterval(intervalMarketStatus);
     intervalMarketStatus = null;
@@ -62,17 +69,6 @@ io.on("connection", (socket) => {
     clearInterval(intervalPrice);
     intervalPrice = null;
   }
-
-  // intervalMarketStatus = setInterval(() => {
-  //   if (indexMarketStatus >= boards.length) {
-  //     indexMarketStatus = 0;
-  //   }
-  //   boards.forEach((board) => {
-  //     const marketStatus = getRandomMarketStatus(board, indexMarketStatus);
-  //     io.emit(EVENT_NAME.MARKET_STATUS, marketStatus);
-  //   });
-  //   indexMarketStatus++;
-  // }, MARKET_STATUS_INTERVAL);
 
   socket.on("disconnect", () => {
     console.log("A user disconnected");

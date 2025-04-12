@@ -17,7 +17,16 @@ export const PriceSocketService = () => {
     return +(Math.random() * 1000).toFixed(0) % 2 ? -1 : 1;
   };
 
-  const _randomValue = (initValue, min, max) => {};
+  const _randomPercent = (maxPercent = 5) => {
+    return +(Math.random() * 10000).toFixed(0) % maxPercent;
+  };
+
+  const _randomValue = (currentValue, maxPercent = 5, probability = 100) => {
+    const randomProbability = _randomPercent(100);
+    if (randomProbability > probability) return currentValue;
+    const randomPercent = _randomPercent(maxPercent);
+    return +((currentValue * (100 + randomPercent)) / 100).toFixed(0);
+  };
 
   const _randomPrice = (symbolRandom) => {
     const priceInfo = _priceInfo[symbolRandom];
@@ -34,18 +43,49 @@ export const PriceSocketService = () => {
         : HNX_UPCOM_PRICE_STEP;
     const randomSign = _randomSign();
     const randomPrice = matchPrice + stepPrice * randomSign;
-    if(randomPrice > ceil) return ceil
-    if(randomPrice < floor) return floor
-    return randomPrice
+    if (randomPrice > ceil) return ceil;
+    if (randomPrice < floor) return floor;
+    return randomPrice;
   };
 
   const _handleGetRandomPrice = (symbolRandom) => {
     const priceInfo = _priceInfo[symbolRandom];
+    const accumulatedVolume = _randomValue(
+      priceInfo.matchPrice.accumulatedVolume,
+      2,
+      50
+    );
+    const matchPrice = _randomPrice(priceInfo.listingInfo.symbol);
+    const foreignBuyVolume = _randomValue(
+      priceInfo.matchPrice.foreignBuyVolume,
+      2,
+      20
+    );
+    const foreignSellVolume = _randomValue(
+      priceInfo.matchPrice.foreignBuyVolume,
+      2,
+      20
+    );
+
+    const lowest =
+      priceInfo.matchPrice.lowest > matchPrice
+        ? matchPrice
+        : priceInfo.matchPrice.lowest;
+    const highest =
+      priceInfo.matchPrice.highest < matchPrice
+        ? matchPrice
+        : priceInfo.matchPrice.highest;
     _priceInfo[symbolRandom] = {
       ...priceInfo,
       matchPrice: {
         ...priceInfo.matchPrice,
         matchPrice: _randomPrice(priceInfo.listingInfo.symbol),
+        accumulatedVolume: accumulatedVolume,
+        accumulatedValue: +(accumulatedVolume * matchPrice).toFixed(0),
+        highest,
+        lowest,
+        foreignBuyVolume,
+        foreignSellVolume,
       },
     };
     return _priceInfo[symbolRandom].matchPrice;

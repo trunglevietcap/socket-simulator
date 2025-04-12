@@ -12,25 +12,5 @@ export const EVENT_NAME = {
   APP_CONFIG: "app-config",
 };
 
-export const MARKET_STATUS = {
-  STARTED: "STARTED",
-  ATO: "ATO",
-  LO_MORNING: "LO_MORNING",
-  LUNCH_BREAK: "LUNCH_BREAK",
-  LO_AFTERNOON: "LO_AFTERNOON",
-  ATC: "ATC",
-  ENDED: "ENDED",
-  EXTEND_HOUR: "EXTEND_HOUR",
-  CLOSED: "CLOSED",
-};
-
-export const BOARD = {
-  HOSE: "HOSE",
-  HNX: "HNX",
-  UPCOM: "UPCOM",
-  DERIVATIVES: "DERIVATIVES",
-  BOND: "BOND",
-};
-
 export const MESSAGE_ALL_CLIENT_SEND = '[{"type":"all"}]';
 
