@@ -14,8 +14,8 @@ const io = new Server(server, {
 let connectedClientsMarketStatus = [];
 let connectedClientsPrice = [];
 let connectedClientsBidAsk = [];
-let intervalMarketStatus = null;
-let intervalPrice = null;
+// let intervalMarketStatus = null;
+// let intervalPrice = null;
 const priceInfoService = PriceSocketService();
 const marketStatusService = MarketStatusSocketService();
 let MatchPriceMessage;
@@ -23,14 +23,14 @@ let BidAskMessage;
 let TIME_OUT_UPDATE_SPEED = 10_000;
 
 const RANDOM_TIME_DEFAULT = {
-  matchPrice: 100,
-  bidAsk: 100,
-  marketStatus: 20_000,
+  matchPrice: 300,
+  bidAsk: 300,
+  marketStatus: 60_000,
 };
 
 const SPEED_PRICE_DEFAULT = {
-  matchPrice: 100,
-  bidAsk: 100,
+  matchPrice: 20,
+  bidAsk: 20,
   marketStatus: 100,
 };
 
@@ -66,6 +66,9 @@ io.on("connection", (socket) => {
         const data = JSON.parse(msg);
         if (data?.symbols?.length && Array.isArray(data?.symbols)) {
           priceInfoService.handleGetPrice(data?.symbols);
+
+          // console.log(connectedClientsPrice.length)
+          connectedClientsPrice = connectedClientsPrice.filter(item=>item.id !== socket.id)
           connectedClientsPrice.push({
             id: socket.id,
             symbols: data?.symbols || [],
@@ -84,6 +87,7 @@ io.on("connection", (socket) => {
       try {
         const data = JSON.parse(msg);
         if (data?.symbols?.length && Array.isArray(data?.symbols)) {
+          connectedClientsBidAsk = connectedClientsBidAsk.filter(item=>item.id !== socket.id)
           connectedClientsBidAsk.push({
             id: socket.id,
             symbols: data?.symbols || [],
@@ -116,8 +120,8 @@ server.listen(8080, () => {
 
 setInterval(() => {
   const randomNumber = +(Math.random() * 10000).toFixed(0) % 100;
-  const random3 = +(Math.random() * 10000).toFixed(0) % 3;
-  if (random3 === 0) {
+  const random3 = +(Math.random() * 10000).toFixed(0) % 10;
+  if (random3 < 7) {
     speedPrice = {
       matchPrice: 5,
       bidAsk: 5,
@@ -133,18 +137,17 @@ setInterval(() => {
   setIntervalSocket(speedPrice);
 }, TIME_OUT_UPDATE_SPEED);
 
-setIntervalSocket(speedPrice);
-function setIntervalSocket(speedPrice) {
-  clearInterval(priceIntervalID);
-  clearInterval(bidAskIntervalID);
-  clearInterval(marketStatusIntervalID);
+setIntervalSocket();
+function setIntervalSocket() {
   priceIntervalID = setInterval(() => {
-    const listPrice = priceInfoService.getRandomPrice(speedPrice.matchPrice);
+    const listPrice = priceInfoService.getRandomPrice(10);
+
     if (listPrice) {
       listPrice.forEach((item) => {
         if ((MatchPriceMessage, item)) {
           const message = MatchPriceMessage.create(item);
           const buffer = MatchPriceMessage.encode(message).finish();
+          // console.log('item', item)
           connectedClientsPrice.forEach((client) => {
             if (client.symbols && client.symbols.includes(item.symbol)) {
               setTimeout(() => {

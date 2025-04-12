@@ -23,18 +23,18 @@ export const PriceSocketService = () => {
   const randomValue = (
     currentValue,
     maxPercent = 5,
-    probability = 100,
+    probability = 1000,
     isSign = false
   ) => {
     const sign = isSign ? _randomSign() : 1;
-    const randomProbability = _randomPercent(100);
+    const randomProbability = _randomPercent(1000);
     if (randomProbability > probability) return currentValue;
     const randomPercent = _randomPercent(maxPercent);
     return +((currentValue * (100 + randomPercent * sign)) / 100).toFixed(0);
   };
 
-  const _randomPrice = (symbolRandom, probability = 100) => {
-    const randomProbability = _randomPercent(100);
+  const _randomPrice = (symbolRandom, probability = 1000) => {
+    const randomProbability = _randomPercent(1000);
     const priceInfo = _priceInfo[symbolRandom];
     const matchPrice = priceInfo.matchPrice.matchPrice;
     if (randomProbability > probability) return matchPrice;
@@ -55,7 +55,7 @@ export const PriceSocketService = () => {
     return randomPrice;
   };
 
-  const _handleGetRandomPrice = (symbolRandom, probability = 100) => {
+  const _handleGetRandomPrice = (symbolRandom, probability = 1000) => {
     const priceInfo = _priceInfo[symbolRandom];
     const accumulatedVolume = randomValue(
       priceInfo.matchPrice.accumulatedVolume,
@@ -107,8 +107,8 @@ export const PriceSocketService = () => {
 
   const _handleGetRandomBidAsk = (symbolRandom, probability) => {
     const priceInfo = _priceInfo[symbolRandom];
-    const bidPrices = priceInfo.bidAsk.bidPrices;
-    const askPrices = priceInfo.bidAsk.askPrices;
+    const bidPrices = priceInfo?.bidAsk?.bidPrices;
+    const askPrices = priceInfo?.bidAsk?.askPrices;
     _priceInfo[symbolRandom] = {
       ..._priceInfo[symbolRandom],
       bidAsk: {
