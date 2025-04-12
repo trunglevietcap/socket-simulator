@@ -91,6 +91,29 @@ export const PriceSocketService = () => {
     return _priceInfo[symbolRandom].matchPrice;
   };
 
+  const _randomBidAsk = (bidAskPrices) => {
+    return (bidAskPrices || []).map((item) => ({
+      ...item,
+      volume: _randomValue(item.volume, 2, 20),
+    }));
+  };
+
+  const _handleGetRandomBidAsk = (symbolRandom) => {
+    const priceInfo = _priceInfo[symbolRandom];
+    const bidPrices = priceInfo.bidAsk.bidPrices;
+    const askPrices = priceInfo.bidAsk.askPrices;
+    _priceInfo[symbolRandom] = {
+      ..._priceInfo[symbolRandom],
+      bidAsk: {
+        ..._priceInfo[symbolRandom].bidAsk,
+        bidPrices: _randomBidAsk(bidPrices),
+        askPrices: _randomBidAsk(askPrices),
+      },
+    };
+    console.log(_priceInfo[symbolRandom].bidAsk)
+    return _priceInfo[symbolRandom].bidAsk;
+  };
+
   const handleGetPrice = async (symbols) => {
     const symbolsFilter = symbols?.filter((sym) => !_priceInfo[sym]);
     if (!symbolsFilter.length) return;
@@ -138,11 +161,25 @@ export const PriceSocketService = () => {
     }
   };
 
+  const getRandomBidAsk = () => {
+    const symbolsSubscription = getSymbolsSubscription();
+    const length = symbolsSubscription.length;
+    if (length) {
+      const listRandom = [];
+      for (let index = 0; index < length; index++) {
+        const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
+        const symbolRandom = symbolsSubscription[indexRandom];
+        listRandom.push(_handleGetRandomBidAsk(symbolRandom));
+      }
+      return listRandom;
+    }
+  };
   return {
     handleGetPrice,
     getPriceInfo,
     getSymbolsSubscription,
     getRandomPrice,
+    getRandomBidAsk
   };
 };
 

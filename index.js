@@ -16,15 +16,18 @@ const io = new Server(server, {
 });
 let connectedClientsMarketStatus = [];
 let connectedClientsPrice = [];
+let connectedClientsBidAsk = [];
 let intervalMarketStatus = null;
 let intervalPrice = null;
 const priceInfoService = PriceSocketService();
 const marketStatusService = MarketStatusSocketService();
-let Message;
+let MatchPriceMessage;
+let BidAskMessage;
 
 load("price.proto", (err, root) => {
   if (err) throw err;
-  Message = root.lookupType("MatchPriceMessage");
+  MatchPriceMessage = root.lookupType("MatchPriceMessage");
+  BidAskMessage = root.lookupType("BidAskMessage");
 });
 
 io.on("connection", (socket) => {
@@ -58,7 +61,21 @@ io.on("connection", (socket) => {
   });
 
   socket.on(EVENT_NAME.BID_ASK, (msg) => {
-    // console.log(msg)
+    if (msg) {
+      try {
+        const data = JSON.parse(msg);
+        if (data?.symbols?.length && Array.isArray(data?.symbols)) {
+          connectedClientsBidAsk.push({
+            id: socket.id,
+            symbols: data?.symbols || [],
+          });
+        }
+      } catch (error) {
+        socket.emit("ERROR", "Message emit incorrect format");
+      }
+    } else {
+      socket.emit("ERROR", "Message empty");
+    }
   });
 
   if (intervalMarketStatus) {
@@ -78,16 +95,19 @@ io.on("connection", (socket) => {
     connectedClientsPrice = connectedClientsPrice.filter(
       (item) => socket.id !== item.id && !item?.symbols?.length
     );
+    connectedClientsBidAsk = connectedClientsBidAsk.filter(
+      (item) => socket.id !== item.id && !item?.symbols?.length
+    );
   });
 });
 
 setInterval(() => {
-  const listPrice = priceInfoService.getRandomPrice(20);
+  const listPrice = priceInfoService.getRandomPrice();
   if (listPrice) {
     listPrice.forEach((item) => {
-      if ((Message, item)) {
-        const message = Message.create(item);
-        const buffer = Message.encode(message).finish();
+      if ((MatchPriceMessage, item)) {
+        const message = MatchPriceMessage.create(item);
+        const buffer = MatchPriceMessage.encode(message).finish();
         connectedClientsPrice.forEach((client) => {
           if (client.symbols && client.symbols.includes(item.symbol)) {
             setTimeout(() => {
@@ -100,6 +120,24 @@ setInterval(() => {
   }
 }, 1000);
 
+setInterval(() => {
+  const listBidAsk = priceInfoService.getRandomBidAsk();
+  if (listBidAsk) {
+    listBidAsk.forEach((item) => {
+      if ((BidAskMessage, item)) {
+        const message = BidAskMessage.create(item);
+        const buffer = BidAskMessage.encode(message).finish();
+        connectedClientsBidAsk.forEach((client) => {
+          if (client.symbols && client.symbols.includes(item.symbol)) {
+            setTimeout(() => {
+              io.to(client.id).emit(EVENT_NAME.BID_ASK, buffer);
+            }, Math.random() * 500);
+          }
+        });
+      }
+    });
+  }
+}, 1000);
 setInterval(() => {
   const radomMarketStatusList = marketStatusService.getRandomMarketStatus();
   radomMarketStatusList.forEach((marketStatus) => {
