@@ -110,7 +110,6 @@ export const PriceSocketService = () => {
         askPrices: _randomBidAsk(askPrices),
       },
     };
-    console.log(_priceInfo[symbolRandom].bidAsk)
     return _priceInfo[symbolRandom].bidAsk;
   };
 

@@ -146,5 +146,5 @@ setInterval(() => {
 }, MARKET_STATUS_INTERVAL);
 
 server.listen(8080, () => {
-  console.log("Server is running on port 8080");
+  console.log("Server is listening");
 });
