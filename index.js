@@ -119,14 +119,14 @@ setInterval(() => {
   const random3 = +(Math.random() * 10000).toFixed(0) % 3;
   if (random3 === 0) {
     speedPrice = {
-      matchPrice: 2,
-      bidAsk: 2,
+      matchPrice: 5,
+      bidAsk: 5,
       marketStatus: 100,
     };
   } else {
     speedPrice = {
-      matchPrice: randomNumber,
-      bidAsk: randomNumber,
+      matchPrice: randomNumber < 5 ? 5 :randomNumber,
+      bidAsk: randomNumber < 5 ? 5 :randomNumber,
       marketStatus: 100,
     };
   }
