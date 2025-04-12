@@ -97,15 +97,6 @@ io.on("connection", (socket) => {
     }
   });
 
-  if (intervalMarketStatus) {
-    clearInterval(intervalMarketStatus);
-    intervalMarketStatus = null;
-  }
-  if (intervalPrice) {
-    clearInterval(intervalPrice);
-    intervalPrice = null;
-  }
-
   socket.on("disconnect", () => {
     console.log("A user disconnected");
     connectedClientsMarketStatus = connectedClientsMarketStatus.filter(
