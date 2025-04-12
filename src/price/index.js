@@ -101,7 +101,7 @@ export const PriceSocketService = () => {
   const _randomBidAsk = (bidAskPrices, probability = 20) => {
     return (bidAskPrices || []).map((item) => ({
       ...item,
-      volume: randomValue(item.volume, 2, probability),
+      volume: randomValue(item.volume, 2, probability, true),
     }));
   };
 
