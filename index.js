@@ -21,10 +21,11 @@ let MatchPriceMessage;
 let BidAskMessage;
 let TIME_OUT_UPDATE_SPEED = 10_000;
 let PERCENT_ITEMS_RANDOM = 50;
+let timeoutIdList = [];
 
 const RANDOM_TIME_DEFAULT = {
-  matchPrice: 100,
-  bidAsk: 100,
+  matchPrice: 50,
+  bidAsk: 50,
   marketStatus: 60_000,
 };
 
@@ -132,19 +133,17 @@ server.listen(8080, () => {
 });
 
 setInterval(() => {
-  const randomNumber = +(Math.random() * 10000).toFixed(0) % 100;
+  const randomNumber = +(Math.random() * 10000).toFixed(0) % 500;
   speed = randomNumber;
-  console.log(speed)
   handleUpdateSpeed(speed);
 }, TIME_OUT_UPDATE_SPEED);
-
-let timeoutIdList = [];
-
-const handleUpdateSpeed = () => {
+handleUpdateSpeed();
+function handleUpdateSpeed() {
   timeoutIdList.forEach((id) => {
     clearInterval(id);
   });
   timeoutIdList = [];
+
   for (let index = 0; index < speed; index++) {
     const priceIntervalID = setInterval(() => {
       const listPrice = priceInfoService.getRandomPrice(PERCENT_ITEMS_RANDOM);
@@ -163,7 +162,7 @@ const handleUpdateSpeed = () => {
           }
         });
       }
-    }, RANDOM_TIME_DEFAULT.matchPrice);
+    }, RANDOM_TIME_DEFAULT.matchPrice );
 
     const bidAskIntervalID = setInterval(() => {
       const listBidAsk = priceInfoService.getRandomBidAsk(PERCENT_ITEMS_RANDOM);
@@ -180,14 +179,14 @@ const handleUpdateSpeed = () => {
           }
         });
       }
-    }, RANDOM_TIME_DEFAULT.bidAsk);
+    }, RANDOM_TIME_DEFAULT.bidAsk );
 
     const marketStatusIntervalID = setInterval(() => {
       const radomMarketStatusList = marketStatusService.getRandomMarketStatus();
       radomMarketStatusList.forEach((marketStatus) => {
         io.emit(EVENT_NAME.MARKET_STATUS, marketStatus);
       });
-    }, RANDOM_TIME_DEFAULT.marketStatus);
+    }, RANDOM_TIME_DEFAULT.marketStatus );
 
     timeoutIdList = [
       ...timeoutIdList,
@@ -196,7 +195,7 @@ const handleUpdateSpeed = () => {
       marketStatusIntervalID,
     ];
   }
-};
+}
 
 // priceIntervalID = setInterval(() => {
 //   const listPrice = priceInfoService.getRandomPrice(speed);
