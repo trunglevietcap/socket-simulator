@@ -5,6 +5,7 @@ import { EVENT_NAME, MESSAGE_ALL_CLIENT_SEND } from "./src/constants.js";
 import { Server } from "socket.io";
 import { PriceSocketService } from "./src/price/index.js";
 import { MarketStatusSocketService } from "./src/market-status/index.js";
+import {throttle} from './src/utils.js'
 const { load } = protobuf;
 const app = express();
 const server = createServer(app);
@@ -23,22 +24,13 @@ let BidAskMessage;
 let TIME_OUT_UPDATE_SPEED = 10_000;
 
 const RANDOM_TIME_DEFAULT = {
-  matchPrice: 300,
-  bidAsk: 300,
+  matchPrice: 1,
+  bidAsk: 11,
   marketStatus: 60_000,
 };
 
-const SPEED_PRICE_DEFAULT = {
-  matchPrice: 100,
-  bidAsk: 100,
-  marketStatus: 100,
-};
+let speed = 1
 
-let speedPrice = {
-  matchPrice: SPEED_PRICE_DEFAULT.matchPrice,
-  bidAsk: SPEED_PRICE_DEFAULT.bidAsk,
-  marketStatus: SPEED_PRICE_DEFAULT.marketStatus,
-};
 let marketStatusIntervalID = null;
 let priceIntervalID = null;
 let bidAskIntervalID = null;
@@ -64,17 +56,20 @@ io.on("connection", (socket) => {
     if (msg) {
       try {
         const data = JSON.parse(msg);
-        if (data?.symbols?.length && Array.isArray(data?.symbols)) {
-          priceInfoService.handleGetPrice(data?.symbols);
 
+        // console.log('id', socket.id)
+        if (Array.isArray(data?.symbols)) {
+          data?.symbols?.length && priceInfoService.handleGetPrice(data?.symbols);
   
           connectedClientsPrice = connectedClientsPrice.filter(item=>item.id !== socket.id)
-          connectedClientsPrice.push({
+          data?.symbols.length && connectedClientsPrice.push({
             id: socket.id,
             symbols: data?.symbols || [],
           });
-          console.log('--------------------------')
-          console.log(connectedClientsPrice)
+
+
+          // console.log('--------------------------')
+          // console.log(socket.id, connectedClientsPrice)
         }
       } catch (error) {
         socket.emit("ERROR", "Message emit incorrect format");
@@ -88,9 +83,9 @@ io.on("connection", (socket) => {
     if (msg) {
       try {
         const data = JSON.parse(msg);
-        if (data?.symbols?.length && Array.isArray(data?.symbols)) {
+        if (Array.isArray(data?.symbols)) {
           connectedClientsBidAsk = connectedClientsBidAsk.filter(item=>item.id !== socket.id)
-          connectedClientsBidAsk.push({
+          data?.symbols.length && connectedClientsBidAsk.push({
             id: socket.id,
             symbols: data?.symbols || [],
           });
@@ -120,29 +115,17 @@ server.listen(8080, () => {
   console.log("Server is listening");
 });
 
-// setInterval(() => {
-//   const randomNumber = +(Math.random() * 10000).toFixed(0) % 100;
-//   const random3 = +(Math.random() * 10000).toFixed(0) % 10;
-//   if (random3 < 7) {
-//     speedPrice = {
-//       matchPrice: 5,
-//       bidAsk: 5,
-//       marketStatus: 100,
-//     };
-//   } else {
-//     speedPrice = {
-//       matchPrice: randomNumber < 5 ? 5 :randomNumber,
-//       bidAsk: randomNumber < 5 ? 5 :randomNumber,
-//       marketStatus: 100,
-//     };
-//   }
-//   setIntervalSocket(speedPrice);
-// }, TIME_OUT_UPDATE_SPEED);
+setInterval(() => {
+  const randomNumber = +(Math.random() * 10000).toFixed(0) % 100;
+  const random3 = +(Math.random() * 10000).toFixed(0) % 10;
+  // speed = 1
+  // console.log(speed)
+}, 5000);
 
 setIntervalSocket();
 function setIntervalSocket() {
   priceIntervalID = setInterval(() => {
-    const listPrice = priceInfoService.getRandomPrice(10);
+    const listPrice = priceInfoService.getRandomPrice(speed);
 
     if (listPrice) {
       listPrice.forEach((item) => {
@@ -161,7 +144,7 @@ function setIntervalSocket() {
   }, RANDOM_TIME_DEFAULT.matchPrice);
 
   bidAskIntervalID = setInterval(() => {
-    const listBidAsk = priceInfoService.getRandomBidAsk(speedPrice.bidAsk);
+    const listBidAsk = priceInfoService.getRandomBidAsk(speed);
     if (listBidAsk) {
       listBidAsk.forEach((item) => {
         if ((BidAskMessage, item)) {

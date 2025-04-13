@@ -23,18 +23,18 @@ export const PriceSocketService = () => {
   const randomValue = (
     currentValue,
     maxPercent = 5,
-    probability = 1000,
+    probability = 100,
     isSign = false
   ) => {
     const sign = isSign ? _randomSign() : 1;
-    const randomProbability = _randomPercent(1000);
+    const randomProbability = _randomPercent(100);
     if (randomProbability > probability) return currentValue;
     const randomPercent = _randomPercent(maxPercent);
     return +((currentValue * (100 + randomPercent * sign)) / 100).toFixed(0);
   };
 
-  const _randomPrice = (symbolRandom, probability = 1000) => {
-    const randomProbability = _randomPercent(1000);
+  const _randomPrice = (symbolRandom, probability = 100) => {
+    const randomProbability = _randomPercent(100);
     const priceInfo = _priceInfo[symbolRandom];
     const matchPrice = priceInfo.matchPrice.matchPrice;
     if (randomProbability > probability) return matchPrice;
@@ -55,7 +55,7 @@ export const PriceSocketService = () => {
     return randomPrice;
   };
 
-  const _handleGetRandomPrice = (symbolRandom, probability = 1000) => {
+  const _handleGetRandomPrice = (symbolRandom, probability = 100) => {
     const priceInfo = _priceInfo[symbolRandom];
     const accumulatedVolume = randomValue(
       priceInfo.matchPrice.accumulatedVolume,
@@ -71,7 +71,7 @@ export const PriceSocketService = () => {
     const foreignSellVolume = randomValue(
       priceInfo.matchPrice.foreignBuyVolume,
       2,
-      probability / 5
+      probability /5
     );
 
     const lowest =
@@ -136,10 +136,12 @@ export const PriceSocketService = () => {
           }),
         }
       );
+      // console.log(response)
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
+  
       _cachePriceInfo(data);
       return data;
     } catch (error) {}
@@ -153,21 +155,24 @@ export const PriceSocketService = () => {
     return Object.keys(_priceInfo);
   };
 
-  const getRandomPrice = (probability) => {
-    const symbolsSubscription = getSymbolsSubscription(probability);
+  const getRandomPrice = (speed) => {
+    const symbolsSubscription = getSymbolsSubscription(100);
     const length = symbolsSubscription.length;
     if (length) {
       const listRandom = [];
       for (let index = 0; index < length; index++) {
         const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
         const symbolRandom = symbolsSubscription[indexRandom];
-        listRandom.push(_handleGetRandomPrice(symbolRandom, probability));
+        const randomSign = _randomPercent(speed);
+        if (randomSign === 0) {
+          listRandom.push(_handleGetRandomPrice(symbolRandom, 100));
+        }
       }
       return listRandom;
     }
   };
 
-  const getRandomBidAsk = (probability) => {
+  const getRandomBidAsk = (speed = 100) => {
     const symbolsSubscription = getSymbolsSubscription();
     const length = symbolsSubscription.length;
     if (length) {
@@ -175,7 +180,10 @@ export const PriceSocketService = () => {
       for (let index = 0; index < length; index++) {
         const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
         const symbolRandom = symbolsSubscription[indexRandom];
-        listRandom.push(_handleGetRandomBidAsk(symbolRandom, probability));
+        const randomSign = _randomPercent(speed);
+        if (randomSign === 0) {
+          listRandom.push(_handleGetRandomBidAsk(symbolRandom, 100));
+        }
       }
       return listRandom;
     }
