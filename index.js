@@ -86,13 +86,13 @@ io.on("connection", (socket) => {
   });
 
   socket.on(EVENT_NAME.BID_ASK, (msg) => {
+    connectedClientsBidAsk = connectedClientsBidAsk.filter(
+      (item) => item.id !== socket.id
+    );
     if (msg) {
       try {
         const data = JSON.parse(msg);
         if (Array.isArray(data?.symbols)) {
-          connectedClientsBidAsk = connectedClientsBidAsk.filter(
-            (item) => item.id !== socket.id
-          );
           data?.symbols.length &&
             connectedClientsBidAsk.push({
               id: socket.id,
@@ -104,6 +104,7 @@ io.on("connection", (socket) => {
               symbolsObj[s] = true;
             });
           });
+          console.log("connectedClientsBidAsk", connectedClientsBidAsk.length);
           priceInfoService.setSymbolsSubscriptionBidAsk(
             Object.keys(symbolsObj)
           );
@@ -135,7 +136,7 @@ server.listen(8080, () => {
 setInterval(() => {
   const randomNumber = +(Math.random() * 10000).toFixed(0) % 200;
   speed = randomNumber;
-  handleUpdateSpeed(speed);
+  handleUpdateSpeed();
 }, TIME_OUT_UPDATE_SPEED);
 handleUpdateSpeed();
 function handleUpdateSpeed() {
@@ -154,6 +155,7 @@ function handleUpdateSpeed() {
             const message = MatchPriceMessage.create(item);
             const buffer = MatchPriceMessage.encode(message).finish();
             // console.log('item', item)
+            // console.log('emit',  connectedClientsBidAsk.length)
             connectedClientsPrice.forEach((client) => {
               if (client.symbols && client.symbols.includes(item.symbol)) {
                 io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
@@ -162,7 +164,7 @@ function handleUpdateSpeed() {
           }
         });
       }
-    }, RANDOM_TIME_DEFAULT.matchPrice );
+    }, RANDOM_TIME_DEFAULT.matchPrice);
 
     const bidAskIntervalID = setInterval(() => {
       const listBidAsk = priceInfoService.getRandomBidAsk(PERCENT_ITEMS_RANDOM);
@@ -179,14 +181,14 @@ function handleUpdateSpeed() {
           }
         });
       }
-    }, RANDOM_TIME_DEFAULT.bidAsk );
+    }, RANDOM_TIME_DEFAULT.bidAsk);
 
     const marketStatusIntervalID = setInterval(() => {
       const radomMarketStatusList = marketStatusService.getRandomMarketStatus();
       radomMarketStatusList.forEach((marketStatus) => {
         io.emit(EVENT_NAME.MARKET_STATUS, marketStatus);
       });
-    }, RANDOM_TIME_DEFAULT.marketStatus );
+    }, RANDOM_TIME_DEFAULT.marketStatus);
 
     timeoutIdList = [
       ...timeoutIdList,
