@@ -3,6 +3,7 @@ import {
   BOARD,
   HNX_UPCOM_PRICE_STEP,
 } from "./../constants.js";
+import { ALL_SYMBOL } from "./../data/index.js";
 export const PriceSocketService = () => {
   const _priceInfo = {};
   let _symbolsSubscriptionMatchPrice = [];
@@ -68,18 +69,23 @@ export const PriceSocketService = () => {
     const priceInfo = _priceInfo[symbolRandom];
     const accumulatedVolume = randomValue(
       priceInfo.matchPrice.accumulatedVolume,
-      1.5,
+      1.1,
       probability / 5
     );
     const matchPrice = _randomPrice(priceInfo.listingInfo.symbol);
     const foreignBuyVolume = randomValue(
       priceInfo.matchPrice.foreignBuyVolume,
-      2,
+      1.1,
       probability / 5
     );
     const foreignSellVolume = randomValue(
       priceInfo.matchPrice.foreignBuyVolume,
-      2,
+      1.1,
+      probability / 5
+    );
+    const matchVol = randomValue(
+      priceInfo.matchPrice.matchVol,
+      1.1,
       probability / 5
     );
 
@@ -95,13 +101,14 @@ export const PriceSocketService = () => {
       ...priceInfo,
       matchPrice: {
         ...priceInfo.matchPrice,
-        matchPrice: _randomPrice(priceInfo.listingInfo.symbol, probability),
+        matchPrice: matchPrice,
         accumulatedVolume: accumulatedVolume,
         accumulatedValue: +(accumulatedVolume * matchPrice).toFixed(0),
         highest,
         lowest,
         foreignBuyVolume,
         foreignSellVolume,
+        matchVol
       },
     };
     return _priceInfo[symbolRandom].matchPrice;
@@ -129,9 +136,7 @@ export const PriceSocketService = () => {
     return _priceInfo[symbolRandom].bidAsk;
   };
 
-  const handleGetPrice = async (symbols) => {
-    const symbolsFilter = symbols?.filter((sym) => !_priceInfo[sym]);
-    if (!symbolsFilter.length) return;
+  const handleGetPrice = async () => {
     try {
       const response = await fetch(
         "https://trading.vietcap.com.vn/api/price/symbols/getList",
@@ -141,7 +146,7 @@ export const PriceSocketService = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            symbols,
+            symbols: ALL_SYMBOL
           }),
         }
       );
@@ -151,7 +156,6 @@ export const PriceSocketService = () => {
       const data = await response.json();
 
       _cachePriceInfo(data);
-      console.log(data)
       return data;
     } catch (error) {}
   };
@@ -184,14 +188,11 @@ export const PriceSocketService = () => {
   const getRandomBidAsk = (speed = 100) => {
     const symbolsSubscription = _symbolsSubscriptionBidAsk;
     const length = symbolsSubscription.length;
-    // console.log(length)
     if (length) {
       const listRandom = [];
       for (let index = 0; index < length; index++) {
-
         const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
         const symbolRandom = symbolsSubscription[indexRandom];
-        // console.log(index)
         const randomSign = _randomPercent(speed);
         if (randomSign === 0 && _priceInfo[symbolRandom]) {
           listRandom.push(_handleGetRandomBidAsk(symbolRandom, 100));

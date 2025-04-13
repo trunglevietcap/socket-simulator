@@ -18,13 +18,14 @@ let connectedClientsBidAsk = [];
 // let intervalPrice = null;
 const priceInfoService = PriceSocketService();
 const marketStatusService = MarketStatusSocketService();
+priceInfoService.handleGetPrice();
 let MatchPriceMessage;
 let BidAskMessage;
-let TIME_OUT_UPDATE_SPEED = 10_000;
+let TIME_OUT_UPDATE_SPEED = 5_000;
 
 const RANDOM_TIME_DEFAULT = {
-  matchPrice: 1,
-  bidAsk: 11,
+  matchPrice: 10,
+  bidAsk: 10,
   marketStatus: 60_000,
 };
 
@@ -58,9 +59,6 @@ io.on("connection", (socket) => {
 
         // console.log('id', socket.id)
         if (Array.isArray(data?.symbols)) {
-          data?.symbols?.length &&
-            priceInfoService.handleGetPrice(data?.symbols);
-
           connectedClientsPrice = connectedClientsPrice.filter(
             (item) => item.id !== socket.id
           );
@@ -104,13 +102,15 @@ io.on("connection", (socket) => {
               id: socket.id,
               symbols: data?.symbols || [],
             });
-            const symbolsObj = {};
-            connectedClientsBidAsk.forEach((item) => {
-              item.symbols.forEach((s) => {
-                symbolsObj[s] = true;
-              });
+          const symbolsObj = {};
+          connectedClientsBidAsk.forEach((item) => {
+            item.symbols.forEach((s) => {
+              symbolsObj[s] = true;
             });
-          priceInfoService.setSymbolsSubscriptionBidAsk(  Object.keys(symbolsObj));
+          });
+          priceInfoService.setSymbolsSubscriptionBidAsk(
+            Object.keys(symbolsObj)
+          );
         }
       } catch (error) {
         socket.emit("ERROR", "Message emit incorrect format");
@@ -121,7 +121,6 @@ io.on("connection", (socket) => {
   });
 
   socket.on("disconnect", () => {
-    console.log("A user disconnected");
     connectedClientsMarketStatus = connectedClientsMarketStatus.filter(
       (id) => socket.id !== id
     );
@@ -141,8 +140,8 @@ setInterval(() => {
   const randomNumber = +(Math.random() * 10000).toFixed(0) % 100;
   const random3 = +(Math.random() * 10000).toFixed(0) % 10;
   // speed = 1
-  // console.log(speed)
-}, 5000);
+  console.log(speed)
+}, TIME_OUT_UPDATE_SPEED);
 
 setIntervalSocket();
 function setIntervalSocket() {
