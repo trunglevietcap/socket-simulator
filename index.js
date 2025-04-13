@@ -134,7 +134,7 @@ server.listen(8080, () => {
 });
 
 setInterval(() => {
-  const randomNumber = +(Math.random() * 10000).toFixed(0) % 200;
+  const randomNumber = +(Math.random() * 10000).toFixed(0) % 100;
   speed = randomNumber;
   handleUpdateSpeed();
 }, TIME_OUT_UPDATE_SPEED);
