@@ -5,6 +5,8 @@ import {
 } from "./../constants.js";
 export const PriceSocketService = () => {
   const _priceInfo = {};
+  let _symbolsSubscriptionMatchPrice = [];
+  let _symbolsSubscriptionBidAsk = [];
 
   const _cachePriceInfo = (priceList) => {
     priceList.forEach((item) => {
@@ -18,6 +20,14 @@ export const PriceSocketService = () => {
 
   const _randomPercent = (maxPercent = 5) => {
     return +(Math.random() * 10000).toFixed(0) % maxPercent;
+  };
+
+  const setSymbolsSubscriptionMatchPrice = (symbols) => {
+    _symbolsSubscriptionMatchPrice = symbols;
+    console.log(symbols)
+  };
+  const setSymbolsSubscriptionBidAsk = (symbols) => {
+    _symbolsSubscriptionBidAsk = symbols;
   };
 
   const randomValue = (
@@ -71,7 +81,7 @@ export const PriceSocketService = () => {
     const foreignSellVolume = randomValue(
       priceInfo.matchPrice.foreignBuyVolume,
       2,
-      probability /5
+      probability / 5
     );
 
     const lowest =
@@ -136,12 +146,12 @@ export const PriceSocketService = () => {
           }),
         }
       );
-      // console.log(response)
+      console.log(response)
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-  
+
       _cachePriceInfo(data);
       return data;
     } catch (error) {}
@@ -156,7 +166,7 @@ export const PriceSocketService = () => {
   };
 
   const getRandomPrice = (speed) => {
-    const symbolsSubscription = getSymbolsSubscription(100);
+    const symbolsSubscription = _symbolsSubscriptionMatchPrice;
     const length = symbolsSubscription.length;
     if (length) {
       const listRandom = [];
@@ -164,7 +174,7 @@ export const PriceSocketService = () => {
         const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
         const symbolRandom = symbolsSubscription[indexRandom];
         const randomSign = _randomPercent(speed);
-        if (randomSign === 0) {
+        if (randomSign === 0 && _priceInfo[symbolRandom]) {
           listRandom.push(_handleGetRandomPrice(symbolRandom, 100));
         }
       }
@@ -173,15 +183,18 @@ export const PriceSocketService = () => {
   };
 
   const getRandomBidAsk = (speed = 100) => {
-    const symbolsSubscription = getSymbolsSubscription();
+    const symbolsSubscription = _symbolsSubscriptionBidAsk;
     const length = symbolsSubscription.length;
+    // console.log(length)
     if (length) {
       const listRandom = [];
       for (let index = 0; index < length; index++) {
+
         const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
         const symbolRandom = symbolsSubscription[indexRandom];
+        // console.log(index)
         const randomSign = _randomPercent(speed);
-        if (randomSign === 0) {
+        if (randomSign === 0 && _priceInfo[symbolRandom]) {
           listRandom.push(_handleGetRandomBidAsk(symbolRandom, 100));
         }
       }
@@ -195,6 +208,8 @@ export const PriceSocketService = () => {
     getRandomPrice,
     getRandomBidAsk,
     randomValue,
+    setSymbolsSubscriptionMatchPrice,
+    setSymbolsSubscriptionBidAsk,
   };
 };
 

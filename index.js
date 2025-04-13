@@ -5,7 +5,6 @@ import { EVENT_NAME, MESSAGE_ALL_CLIENT_SEND } from "./src/constants.js";
 import { Server } from "socket.io";
 import { PriceSocketService } from "./src/price/index.js";
 import { MarketStatusSocketService } from "./src/market-status/index.js";
-import {throttle} from './src/utils.js'
 const { load } = protobuf;
 const app = express();
 const server = createServer(app);
@@ -29,7 +28,7 @@ const RANDOM_TIME_DEFAULT = {
   marketStatus: 60_000,
 };
 
-let speed = 1
+let speed = 50;
 
 let marketStatusIntervalID = null;
 let priceIntervalID = null;
@@ -59,14 +58,27 @@ io.on("connection", (socket) => {
 
         // console.log('id', socket.id)
         if (Array.isArray(data?.symbols)) {
-          data?.symbols?.length && priceInfoService.handleGetPrice(data?.symbols);
-  
-          connectedClientsPrice = connectedClientsPrice.filter(item=>item.id !== socket.id)
-          data?.symbols.length && connectedClientsPrice.push({
-            id: socket.id,
-            symbols: data?.symbols || [],
-          });
+          data?.symbols?.length &&
+            priceInfoService.handleGetPrice(data?.symbols);
 
+          connectedClientsPrice = connectedClientsPrice.filter(
+            (item) => item.id !== socket.id
+          );
+          data?.symbols.length &&
+            connectedClientsPrice.push({
+              id: socket.id,
+              symbols: data?.symbols || [],
+            });
+
+          const symbolsObj = {};
+          connectedClientsPrice.forEach((item) => {
+            item.symbols.forEach((s) => {
+              symbolsObj[s] = true;
+            });
+          });
+          priceInfoService.setSymbolsSubscriptionMatchPrice(
+            Object.keys(symbolsObj)
+          );
 
           // console.log('--------------------------')
           // console.log(socket.id, connectedClientsPrice)
@@ -84,11 +96,21 @@ io.on("connection", (socket) => {
       try {
         const data = JSON.parse(msg);
         if (Array.isArray(data?.symbols)) {
-          connectedClientsBidAsk = connectedClientsBidAsk.filter(item=>item.id !== socket.id)
-          data?.symbols.length && connectedClientsBidAsk.push({
-            id: socket.id,
-            symbols: data?.symbols || [],
-          });
+          connectedClientsBidAsk = connectedClientsBidAsk.filter(
+            (item) => item.id !== socket.id
+          );
+          data?.symbols.length &&
+            connectedClientsBidAsk.push({
+              id: socket.id,
+              symbols: data?.symbols || [],
+            });
+            const symbolsObj = {};
+            connectedClientsBidAsk.forEach((item) => {
+              item.symbols.forEach((s) => {
+                symbolsObj[s] = true;
+              });
+            });
+          priceInfoService.setSymbolsSubscriptionBidAsk(  Object.keys(symbolsObj));
         }
       } catch (error) {
         socket.emit("ERROR", "Message emit incorrect format");
