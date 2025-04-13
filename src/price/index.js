@@ -154,7 +154,6 @@ export const PriceSocketService = () => {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
-
       _cachePriceInfo(data);
       return data;
     } catch (error) {}
