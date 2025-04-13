@@ -24,7 +24,6 @@ export const PriceSocketService = () => {
 
   const setSymbolsSubscriptionMatchPrice = (symbols) => {
     _symbolsSubscriptionMatchPrice = symbols;
-    console.log(symbols)
   };
   const setSymbolsSubscriptionBidAsk = (symbols) => {
     _symbolsSubscriptionBidAsk = symbols;
@@ -146,13 +145,13 @@ export const PriceSocketService = () => {
           }),
         }
       );
-      console.log(response)
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
 
       _cachePriceInfo(data);
+      console.log(data)
       return data;
     } catch (error) {}
   };

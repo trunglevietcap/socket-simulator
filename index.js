@@ -28,7 +28,7 @@ const RANDOM_TIME_DEFAULT = {
   marketStatus: 60_000,
 };
 
-let speed = 10;
+let speed = 50;
 
 let marketStatusIntervalID = null;
 let priceIntervalID = null;
