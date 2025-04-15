@@ -1,25 +1,32 @@
 import express from "express";
 import { createServer } from "http";
 import protobuf from "protobufjs"; // Import default
-import { EVENT_NAME, MESSAGE_ALL_CLIENT_SEND } from "./src/constants.js";
+import { EVENT_NAME } from "./src/constants.js";
 import { Server } from "socket.io";
 import { PriceSocketService } from "./src/price/index.js";
 import { MarketStatusSocketService } from "./src/market-status/index.js";
+import { db } from "./src/firebase/firebase-config.js";
+import { ref, onValue } from "firebase/database";
+import { FIREBASE_DB_NAME } from "./src/firebase/firebase-config.js";
+
 const { load } = protobuf;
 const app = express();
 const server = createServer(app);
 const io = new Server(server, {
   path: "/ws/price/socket.io",
 });
+
 let connectedClientsMarketStatus = [];
 let connectedClientsPrice = [];
 let connectedClientsBidAsk = [];
+let connectedClientsAppConfig = [];
+
 const priceInfoService = PriceSocketService();
 const marketStatusService = MarketStatusSocketService();
 priceInfoService.handleGetPrice();
+
 let MatchPriceMessage;
 let BidAskMessage;
-let TIME_OUT_UPDATE_SPEED = 10_000;
 let PERCENT_ITEMS_RANDOM = 50;
 let timeoutIdList = [];
 
@@ -41,11 +48,11 @@ io.on("connection", (socket) => {
   socket.emit("SUCCESS", "HELLO WOLD - socket simulator connected!");
 
   socket.on(EVENT_NAME.MARKET_STATUS, (msg) => {
-    if (MESSAGE_ALL_CLIENT_SEND === msg) {
-      connectedClientsMarketStatus.push(socket.id);
-    } else {
-      socket.emit("ERROR", "Message emit incorrect format");
-    }
+    connectedClientsMarketStatus.push(socket.id);
+  });
+
+  socket.on(EVENT_NAME.APP_CONFIG, (msg) => {
+    connectedClientsAppConfig.push(socket.id);
   });
 
   socket.on(EVENT_NAME.MATCH_PRICE, (msg) => {
@@ -127,18 +134,49 @@ io.on("connection", (socket) => {
     connectedClientsBidAsk = connectedClientsBidAsk.filter(
       (item) => socket.id !== item.id && !item?.symbols?.length
     );
+    connectedClientsAppConfig = connectedClientsAppConfig.filter(
+      (item) => socket.id !== item.id && !item?.symbols?.length
+    );
   });
 });
 server.listen(8080, () => {
   console.log("Server is listening");
 });
 
-setInterval(() => {
-  const randomNumber = +(Math.random() * 10000).toFixed(0) % 100;
-  speed = randomNumber;
-  handleUpdateSpeed();
-}, TIME_OUT_UPDATE_SPEED);
-handleUpdateSpeed();
+// firebase - db realtime
+const appConfigRef = ref(db, FIREBASE_DB_NAME.APP_CONFIG);
+const socketConfigRef = ref(db, FIREBASE_DB_NAME.SOCKET_CONFIG);
+const marketStatusRef = ref(db, FIREBASE_DB_NAME.MARKET_STATUS);
+onValue(appConfigRef, (snapshot) => {
+  const configData = snapshot.val();
+  connectedClientsAppConfig.forEach((clientId) => {
+    io.to(clientId).emit(EVENT_NAME.APP_CONFIG, configData);
+  });
+});
+
+onValue(socketConfigRef, (snapshot) => {
+  const configData = snapshot.val();
+  speed = configData?.speed || 1;
+  const stop = configData?.stop;
+  stop ? handleStopSocketPrice() : handleUpdateSpeed();
+});
+
+onValue(marketStatusRef, (snapshot) => {
+  const configData = snapshot.val();
+  connectedClientsMarketStatus.forEach((clientId) => {
+    if (configData) {
+      Object.values(configData).forEach((ms) => {
+        io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, ms);
+      });
+    }
+  });
+});
+
+function handleStopSocketPrice() {
+  timeoutIdList.forEach((id) => {
+    clearInterval(id);
+  });
+}
 function handleUpdateSpeed() {
   timeoutIdList.forEach((id) => {
     clearInterval(id);
@@ -154,8 +192,6 @@ function handleUpdateSpeed() {
           if ((MatchPriceMessage, item)) {
             const message = MatchPriceMessage.create(item);
             const buffer = MatchPriceMessage.encode(message).finish();
-            // console.log('item', item)
-            // console.log('emit',  connectedClientsBidAsk.length)
             connectedClientsPrice.forEach((client) => {
               if (client.symbols && client.symbols.includes(item.symbol)) {
                 io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
@@ -183,37 +219,6 @@ function handleUpdateSpeed() {
       }
     }, RANDOM_TIME_DEFAULT.bidAsk);
 
-    const marketStatusIntervalID = setInterval(() => {
-      const radomMarketStatusList = marketStatusService.getRandomMarketStatus();
-      radomMarketStatusList.forEach((marketStatus) => {
-        io.emit(EVENT_NAME.MARKET_STATUS, marketStatus);
-      });
-    }, RANDOM_TIME_DEFAULT.marketStatus);
-
-    timeoutIdList = [
-      ...timeoutIdList,
-      priceIntervalID,
-      bidAskIntervalID,
-      marketStatusIntervalID,
-    ];
+    timeoutIdList = [...timeoutIdList, priceIntervalID, bidAskIntervalID];
   }
 }
-
-// priceIntervalID = setInterval(() => {
-//   const listPrice = priceInfoService.getRandomPrice(speed);
-
-//   if (listPrice) {
-//     listPrice.forEach((item) => {
-//       if ((MatchPriceMessage, item)) {
-//         const message = MatchPriceMessage.create(item);
-//         const buffer = MatchPriceMessage.encode(message).finish();
-//         // console.log('item', item)
-//         connectedClientsPrice.forEach((client) => {
-//           if (client.symbols && client.symbols.includes(item.symbol)) {
-//             io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
-//           }
-//         });
-//       }
-//     });
-//   }
-// }, RANDOM_TIME_DEFAULT.matchPrice);

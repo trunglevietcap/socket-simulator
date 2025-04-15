@@ -3,7 +3,7 @@ import {
   BOARD,
   HNX_UPCOM_PRICE_STEP,
 } from "./../constants.js";
-import { ALL_SYMBOL } from "./../data/index.js";
+import { ALL_SYMBOL } from "../data/all-symbols.js";
 export const PriceSocketService = () => {
   const _priceInfo = {};
   let _symbolsSubscriptionMatchPrice = [];
