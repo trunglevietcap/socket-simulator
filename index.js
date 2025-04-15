@@ -6,8 +6,10 @@ import { Server } from "socket.io";
 import { PriceSocketService } from "./src/price/index.js";
 import { MarketStatusSocketService } from "./src/market-status/index.js";
 import { db } from "./src/firebase/firebase-config.js";
-import { ref, onValue } from "firebase/database";
+import { ref, onValue, set } from "firebase/database";
 import { FIREBASE_DB_NAME } from "./src/firebase/firebase-config.js";
+import { spawn } from "child_process";
+import process from "process";
 
 const { load } = protobuf;
 const app = express();
@@ -23,7 +25,7 @@ let connectedClientsAppConfig = [];
 
 const priceInfoService = PriceSocketService();
 const marketStatusService = MarketStatusSocketService();
-priceInfoService.handleGetPrice();
+// priceInfoService.handleGetPrice();
 
 let MatchPriceMessage;
 let BidAskMessage;
@@ -156,8 +158,13 @@ onValue(appConfigRef, (snapshot) => {
 
 onValue(socketConfigRef, (snapshot) => {
   const configData = snapshot.val();
-  speed = configData?.speed || 1;
-  const stop = configData?.stop;
+  speed = configData?.speedPrice || 1;
+  const stop = configData?.stopPrice;
+  const restart = configData?.restart;
+  if (restart) {
+    set(socketConfigRef, { ...configData, restart: false });
+    restartApp();
+  }
   stop ? handleStopSocketPrice() : handleUpdateSpeed();
 });
 
@@ -222,3 +229,23 @@ function handleUpdateSpeed() {
     timeoutIdList = [...timeoutIdList, priceIntervalID, bidAskIntervalID];
   }
 }
+
+function restartApp() {
+  timeoutIdList.forEach((id) => clearInterval(id));
+  timeoutIdList = [];
+
+  server.close(() => {
+    process.exit(0);
+  });
+
+  setTimeout(() => {
+    process.exit(1);
+  }, 5000);
+}
+server.on("error", (err) => {
+  if (err.code === "EADDRINUSE") {
+    process.exit(1);
+  } else {
+    throw err;
+  }
+});
