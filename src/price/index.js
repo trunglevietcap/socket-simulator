@@ -259,16 +259,17 @@ export const PriceSocketService = () => {
       const randomIndex = _randomPercent(TOP_STOCK_TYPE.length);
       return Object.values(TOP_STOCK_TYPE)[randomIndex];
     };
+    const randomAddLength = _randomPercent(10);
     const listPriceSymbolRandom = [
-      ...priceInfoListHNXVN30.slice(0, 15),
-      ...priceInfoListVN30.slice(0, 10),
+      ...priceInfoListHNXVN30.slice(0, 10 + randomAddLength),
+      ...priceInfoListVN30.slice(0, 5 + randomAddLength),
       ...priceInfoListHOSE
         .filter((item) => !VN30_LIST.includes(item.listingInfo.symbol))
-        .slice(0, 80),
+        .slice(0, 70 + randomAddLength),
       ...priceInfoListHNX
         .filter((item) => !HNX30_LIST.includes(item.listingInfo.symbol))
-        .slice(0, 40),
-      ...priceInfoListUPCOM.slice(0, 15),
+        .slice(0, 30 + randomAddLength),
+      ...priceInfoListUPCOM.slice(0, 10 + randomAddLength),
     ];
 
     return listPriceSymbolRandom.map((item) => {
