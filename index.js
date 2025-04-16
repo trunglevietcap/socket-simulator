@@ -72,8 +72,6 @@ io.on("connection", (socket) => {
     if (msg) {
       try {
         const data = JSON.parse(msg);
-
-        // console.log('id', socket.id)
         if (Array.isArray(data?.symbols)) {
           connectedClientsPrice = connectedClientsPrice.filter(
             (item) => item.id !== socket.id

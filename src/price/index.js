@@ -4,7 +4,7 @@ import {
   HNX_UPCOM_PRICE_STEP,
   TOP_STOCK_TYPE,
 } from "./../constants.js";
-import { ALL_SYMBOL, HNX30_LIST, VN30_LIST } from "../data/all-symbols.js";
+import { ALL_SYMBOL, VN30_OBJECT, HNX30_OBJECT } from "../data/all-symbols.js";
 import { BASE_URL } from "../endPoint.js";
 import { SYMBOLS_INFO } from "./../data/symbols-info.js";
 export const PriceSocketService = () => {
@@ -238,17 +238,21 @@ export const PriceSocketService = () => {
       return percentChangeB - percentChangeA;
     };
     const priceInfoListHNX = priceInfoList
-      ?.filter((item) => item.listingInfo.board === BOARD.HNX)
+      ?.filter((item) => item.listingInfo.board === BOARD.HNX && !HNX30_OBJECT[item.listingInfo.symbol])
       .sort(sortPercentChange);
 
-    const priceInfoListHNXVN30 = priceInfoListHNX.filter((item) => {
+    const priceInfoListHNXVN30 = priceInfoList.filter((item) => {
       return HNX30_LIST.includes(item.listingInfo.symbol);
     });
     const priceInfoListHOSE = priceInfoList
-      ?.filter((item) => item.listingInfo.board === BOARD.HSX)
+      ?.filter(
+        (item) =>
+          item.listingInfo.board === BOARD.HSX &&
+          !VN30_OBJECT[item.listingInfo.symbol]
+      )
       .sort(sortPercentChange);
 
-    const priceInfoListVN30 = priceInfoListHOSE.filter((item) =>
+    const priceInfoListVN30 = priceInfoList.filter((item) =>
       VN30_LIST.includes(item.listingInfo.symbol)
     );
     const priceInfoListUPCOM = priceInfoList
@@ -263,11 +267,9 @@ export const PriceSocketService = () => {
     const listPriceSymbolRandom = [
       ...priceInfoListHNXVN30.slice(0, 15 + randomAddLength),
       ...priceInfoListVN30.slice(0, 15 + randomAddLength),
-      ...priceInfoListHOSE
-        .filter((item) => !VN30_LIST.includes(item.listingInfo.symbol))
-        .slice(0, 70 + randomAddLength),
+      ...priceInfoListHOSE.slice(0, 70 + randomAddLength),
       ...priceInfoListHNX
-        .filter((item) => !HNX30_LIST.includes(item.listingInfo.symbol))
+        .filter((item) => !HNX30_OBJECT[item.listingInfo.symbol])
         .slice(0, 30 + randomAddLength),
       ...priceInfoListUPCOM.slice(0, 10 + randomAddLength),
     ];
@@ -275,10 +277,11 @@ export const PriceSocketService = () => {
     return listPriceSymbolRandom.map((item) => {
       const listingInfo = item?.listingInfo;
       const matchPrice = item.matchPrice.matchPrice;
+      const symbol = listingInfo.symbol;
 
       return {
         group: listingInfo.board,
-        hnx30: !!HNX30_LIST.includes(listingInfo.symbol),
+        hnx30: !!HNX30_OBJECT[symbol],
         lastPrice1DayAgo: matchPrice,
         lastPrice5DaysAgo: matchPrice,
         lastPrice20DaysAgo: matchPrice,
@@ -286,7 +289,7 @@ export const PriceSocketService = () => {
         marketCap: 111111111,
         stockCode: listingInfo.symbol,
         topStockType: getRandomTopStockType(),
-        vn30: !!VN30_LIST.includes(listingInfo.symbol),
+        vn30: !!VN30_OBJECT[symbol],
       };
     });
   };
