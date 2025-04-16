@@ -36,7 +36,6 @@ const RANDOM_TIME_DEFAULT = {
 let speed = 1;
 
 function handleGetPrice() {
-  console.log("getPrice----");
   priceInfoService.handleGetPrice();
 }
 
@@ -84,9 +83,6 @@ io.on("connection", (socket) => {
           priceInfoService.setSymbolsSubscriptionMatchPrice(
             Object.keys(symbolsObj)
           );
-
-          // console.log('--------------------------')
-          // console.log(socket.id, connectedClientsPrice)
         }
       } catch (error) {
         socket.emit("ERROR", "Message emit incorrect format");

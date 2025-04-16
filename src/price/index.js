@@ -4,6 +4,7 @@ import {
   HNX_UPCOM_PRICE_STEP,
 } from "./../constants.js";
 import { ALL_SYMBOL } from "../data/all-symbols.js";
+import { BASE_URL } from "../endPoint.js";
 export const PriceSocketService = () => {
   const _priceInfo = {};
   let _symbolsSubscriptionMatchPrice = [];
@@ -108,7 +109,7 @@ export const PriceSocketService = () => {
         lowest,
         foreignBuyVolume,
         foreignSellVolume,
-        matchVol
+        matchVol,
       },
     };
     return _priceInfo[symbolRandom].matchPrice;
@@ -138,25 +139,25 @@ export const PriceSocketService = () => {
 
   const handleGetPrice = async () => {
     try {
-      const response = await fetch(
-        "https://trading.vietcap.com.vn/api/price/symbols/getList",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            symbols: ALL_SYMBOL
-          }),
-        }
-      );
+      const response = await fetch(`${BASE_URL}/api/price/symbols/getList`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          symbols: ALL_SYMBOL,
+        }),
+      });
+      console.log(response)
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
       const data = await response.json();
       _cachePriceInfo(data);
       return data;
-    } catch (error) {}
+    } catch (error) {
+      console.log('Get price error!', error)
+    }
   };
 
   const getPriceInfo = (symbol) => {
