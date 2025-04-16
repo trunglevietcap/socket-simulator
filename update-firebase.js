@@ -11,6 +11,7 @@ export const FIREBASE_DB_NAME = {
 const appConfigRef = ref(db, FIREBASE_DB_NAME.APP_CONFIG);
 const marketStatusRef = ref(db, FIREBASE_DB_NAME.MARKET_STATUS);
 const resetDataFirebaseRef = ref(db, `${FIREBASE_DB_NAME.SOCKET_CONFIG}/resetDataFirebase`);
+const socketConfigRef = ref(db, `${FIREBASE_DB_NAME.SOCKET_CONFIG}`);
 onValue(resetDataFirebaseRef, (snapshot) => {
   const resetDataFirebase = snapshot.val();
   if (resetDataFirebase) {

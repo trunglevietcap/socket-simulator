@@ -9,14 +9,14 @@ export const FIREBASE_DB_NAME = {
 }
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCFU96Vits90jzlDXBVGH6J7IqnowIoV9k",
-  authDomain: "console-socket-simulator.firebaseapp.com",
-  projectId: "console-socket-simulator",
-  storageBucket: "console-socket-simulator.firebasestorage.app",
-  messagingSenderId: "451793869580",
-  appId: "1:451793869580:web:663397fac19bece4b2c729",
-  measurementId: "G-TV13HVSXNP",
-  databaseURL: "https://console-socket-simulator-default-rtdb.asia-southeast1.firebasedatabase.app",
+  apiKey: "AIzaSyDGMaSD0fTo-Y9qziW7d_-4abAqxGAFElI",
+  authDomain: "socket-14a79.firebaseapp.com",
+  databaseURL: "https://socket-14a79-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "socket-14a79",
+  storageBucket: "socket-14a79.firebasestorage.app",
+  messagingSenderId: "300053149102",
+  appId: "1:300053149102:web:e4b297fab6ea4d2a58043f",
+  measurementId: "G-96XWRRMZMK"
 };
 
 
