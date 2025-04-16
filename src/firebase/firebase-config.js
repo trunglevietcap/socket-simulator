@@ -19,6 +19,7 @@ const firebaseConfig = {
   databaseURL: "https://console-socket-simulator-default-rtdb.asia-southeast1.firebasedatabase.app",
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 

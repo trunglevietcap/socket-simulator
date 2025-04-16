@@ -21,7 +21,6 @@ let connectedClientsBidAsk = [];
 let connectedClientsAppConfig = [];
 
 const priceInfoService = PriceSocketService();
-priceInfoService.handleGetPrice();
 
 let MatchPriceMessage;
 let BidAskMessage;
@@ -35,6 +34,12 @@ const RANDOM_TIME_DEFAULT = {
 };
 
 let speed = 1;
+
+function handleGetPrice() {
+  priceInfoService.handleGetPrice();
+}
+
+handleGetPrice()
 
 load("price.proto", (err, root) => {
   if (err) throw err;
@@ -145,6 +150,10 @@ server.listen(8080, () => {
 const appConfigRef = ref(db, FIREBASE_DB_NAME.APP_CONFIG);
 const socketConfigRef = ref(db, FIREBASE_DB_NAME.SOCKET_CONFIG);
 const marketStatusRef = ref(db, FIREBASE_DB_NAME.MARKET_STATUS);
+const reUpdatePriceRef = ref(
+  db,
+  `${FIREBASE_DB_NAME.APP_CONFIG}/reUpdatePrice`
+);
 onValue(appConfigRef, (snapshot) => {
   const configData = snapshot.val();
   connectedClientsAppConfig.forEach((clientId) => {
@@ -153,23 +162,34 @@ onValue(appConfigRef, (snapshot) => {
 });
 
 onValue(socketConfigRef, (snapshot) => {
-  // const configData = snapshot.val();
-  // speed = configData?.speedPrice || 1;
-  // const stop = configData?.stopPrice;
-  // const restart = configData?.restart;
-  // if (restart) {
-  //   set(socketConfigRef, { ...configData, restart: false });
-  //   restartApp();
-  // }
-  // stop ? handleStopSocketPrice() : handleUpdateSpeed();
+  const configData = snapshot.val();
+  speed = configData?.speedPrice || 1;
+  const stop = configData?.stopPrice;
+  const reUpdatePrice = configData?.reUpdatePrice;
+  if (reUpdatePrice) {
+    handleGetPrice();
+    set(socketConfigRef, { ...configData, reUpdatePrice: false });
+  }
+  stop ? handleStopSocketPrice() : handleUpdateSpeed();
 });
-handleUpdateSpeed()
+
+onValue(reUpdatePriceRef, (snapshot) => {
+  const reUpdatePrice = snapshot.val();
+  console.log('reUpdatePrice', reUpdatePrice)
+  if (reUpdatePrice) {
+    handleGetPrice();
+    set(socketConfigRef, { ...configData, reUpdatePrice: false });
+  }
+});
+
+handleUpdateSpeed();
 
 onValue(marketStatusRef, (snapshot) => {
-  const configData = snapshot.val();
+  const marketStatusData = snapshot.val();
+  console.log('reUpdatePrice', marketStatusData)
   connectedClientsMarketStatus.forEach((clientId) => {
-    if (configData) {
-      Object.values(configData).forEach((ms) => {
+    if (marketStatusData) {
+      Object.values(marketStatusData).forEach((ms) => {
         io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, ms);
       });
     }
