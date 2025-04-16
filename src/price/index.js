@@ -261,8 +261,8 @@ export const PriceSocketService = () => {
     };
     const randomAddLength = _randomPercent(10);
     const listPriceSymbolRandom = [
-      ...priceInfoListHNXVN30.slice(0, 10 + randomAddLength),
-      ...priceInfoListVN30.slice(0, 5 + randomAddLength),
+      ...priceInfoListHNXVN30.slice(0, 15 + randomAddLength),
+      ...priceInfoListVN30.slice(0, 15 + randomAddLength),
       ...priceInfoListHOSE
         .filter((item) => !VN30_LIST.includes(item.listingInfo.symbol))
         .slice(0, 70 + randomAddLength),
