@@ -257,7 +257,7 @@ export const PriceSocketService = () => {
 
     const getRandomTopStockType = () => {
       const randomIndex = _randomPercent(TOP_STOCK_TYPE.length);
-      return TOP_STOCK_TYPE[randomIndex];
+      return Object.values(TOP_STOCK_TYPE)[randomIndex];
     };
     const listPriceSymbolRandom = [
       ...priceInfoListHNXVN30.slice(0, 15),
