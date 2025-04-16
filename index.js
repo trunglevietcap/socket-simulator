@@ -32,8 +32,8 @@ let timeoutIdList = [];
 const RANDOM_TIME_DEFAULT = {
   matchPrice: 50,
   bidAsk: 50,
-  topStockGroupStreaming: 1000,
-  topStockChangeStreaming: 1000,
+  topStockGroupStreaming: 10000,
+  topStockChangeStreaming: 15000,
 };
 
 let speed = 1;
