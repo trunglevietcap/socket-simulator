@@ -7,7 +7,6 @@ import { PriceSocketService } from "./src/price/index.js";
 import { db } from "./src/firebase/firebase-config.js";
 import { ref, onValue, set } from "firebase/database";
 import { FIREBASE_DB_NAME } from "./src/firebase/firebase-config.js";
-import process from "process";
 
 const { load } = protobuf;
 const app = express();
