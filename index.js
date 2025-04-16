@@ -36,10 +36,11 @@ const RANDOM_TIME_DEFAULT = {
 let speed = 1;
 
 function handleGetPrice() {
+  console.log("getPrice----");
   priceInfoService.handleGetPrice();
 }
 
-handleGetPrice()
+handleGetPrice();
 
 load("price.proto", (err, root) => {
   if (err) throw err;
@@ -150,10 +151,7 @@ server.listen(8080, () => {
 const appConfigRef = ref(db, FIREBASE_DB_NAME.APP_CONFIG);
 const socketConfigRef = ref(db, FIREBASE_DB_NAME.SOCKET_CONFIG);
 const marketStatusRef = ref(db, FIREBASE_DB_NAME.MARKET_STATUS);
-const reUpdatePriceRef = ref(
-  db,
-  `${FIREBASE_DB_NAME.APP_CONFIG}/reUpdatePrice`
-);
+
 onValue(appConfigRef, (snapshot) => {
   const configData = snapshot.val();
   connectedClientsAppConfig.forEach((clientId) => {
@@ -165,28 +163,23 @@ onValue(socketConfigRef, (snapshot) => {
   const configData = snapshot.val();
   speed = configData?.speedPrice || 1;
   const stop = configData?.stopPrice;
-  const reUpdatePrice = configData?.reUpdatePrice;
-  if (reUpdatePrice) {
-    handleGetPrice();
-    set(socketConfigRef, { ...configData, reUpdatePrice: false });
-  }
   stop ? handleStopSocketPrice() : handleUpdateSpeed();
 });
 
+const reUpdatePriceRef = ref(
+  db,
+  `${FIREBASE_DB_NAME.APP_CONFIG}/reUpdatePrice`
+);
 onValue(reUpdatePriceRef, (snapshot) => {
   const reUpdatePrice = snapshot.val();
-  console.log('reUpdatePrice', reUpdatePrice)
   if (reUpdatePrice) {
     handleGetPrice();
-    set(socketConfigRef, { ...configData, reUpdatePrice: false });
+    set(reUpdatePriceRef, false);
   }
 });
 
-handleUpdateSpeed();
-
 onValue(marketStatusRef, (snapshot) => {
   const marketStatusData = snapshot.val();
-  console.log('reUpdatePrice', marketStatusData)
   connectedClientsMarketStatus.forEach((clientId) => {
     if (marketStatusData) {
       Object.values(marketStatusData).forEach((ms) => {
@@ -201,12 +194,13 @@ function handleStopSocketPrice() {
     clearInterval(id);
   });
 }
+
+handleUpdateSpeed();
 function handleUpdateSpeed() {
   timeoutIdList.forEach((id) => {
     clearInterval(id);
   });
   timeoutIdList = [];
-
   for (let index = 0; index < speed; index++) {
     const priceIntervalID = setInterval(() => {
       const listPrice = priceInfoService.getRandomPrice(PERCENT_ITEMS_RANDOM);
