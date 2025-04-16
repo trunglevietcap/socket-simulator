@@ -10,6 +10,8 @@ export const EVENT_NAME = {
   HNX_BOND_PRICE: "hnx-price-new-streaming",
   MARKET_STATUS: "market-status",
   APP_CONFIG: "app-config",
+  TOP_STOCK_GROUP_STREAMING: "top-stock-group-streaming",
+  TOP_STOCK_CHANGE_STREAMING: "top-stock-change-streaming",
 };
 
 export const BOARD = {
@@ -18,6 +20,7 @@ export const BOARD = {
   UPCOM: "UPCOM",
   DERIVATIVES: "DERIVATIVES",
   BOND: "BOND",
+  HSX: 'HSX'
 };
 
 export const MESSAGE_ALL_CLIENT_SEND = '[{"type":"all"}]';
@@ -43,3 +46,12 @@ export const HOSE_PRICE_STEP = {
   stepSecond: { min: 10_000, max: 49_950, step: 50 },
   stepThird: { min: 49_950, step: 100 },
 };
+
+export const TOP_STOCK_TYPE = {
+  LOSER_1_D: "LOSER_1_D",
+  LOSER_1_W: "LOSER_1_W",
+  LOSER_1_M: "LOSER_1_M",
+  GAINER_1_D: "GAINER_1_D",
+  GAINER_1_W: "GAINER_1_W",
+  GAINER_1_M: "GAINER_1_M"
+}

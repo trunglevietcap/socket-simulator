@@ -19,6 +19,8 @@ let connectedClientsMarketStatus = [];
 let connectedClientsPrice = [];
 let connectedClientsBidAsk = [];
 let connectedClientsAppConfig = [];
+let connectedClientTopStockChange = [];
+let connectedClientTopStockGroup = [];
 
 const priceInfoService = PriceSocketService();
 
@@ -30,7 +32,8 @@ let timeoutIdList = [];
 const RANDOM_TIME_DEFAULT = {
   matchPrice: 50,
   bidAsk: 50,
-  marketStatus: 60_000,
+  topStockGroupStreaming: 1000,
+  topStockChangeStreaming: 1000,
 };
 
 let speed = 1;
@@ -56,6 +59,13 @@ io.on("connection", (socket) => {
 
   socket.on(EVENT_NAME.APP_CONFIG, (msg) => {
     connectedClientsAppConfig.push(socket.id);
+  });
+
+  socket.on(EVENT_NAME.TOP_STOCK_CHANGE_STREAMING, (msg) => {
+    connectedClientTopStockChange.push(socket.id);
+  });
+  socket.on(EVENT_NAME.TOP_STOCK_GROUP_STREAMING, (msg) => {
+    connectedClientTopStockGroup.push(socket.id);
   });
 
   socket.on(EVENT_NAME.MATCH_PRICE, (msg) => {
@@ -111,7 +121,6 @@ io.on("connection", (socket) => {
               symbolsObj[s] = true;
             });
           });
-          console.log("connectedClientsBidAsk", connectedClientsBidAsk.length);
           priceInfoService.setSymbolsSubscriptionBidAsk(
             Object.keys(symbolsObj)
           );
@@ -233,6 +242,46 @@ function handleUpdateSpeed() {
       }
     }, RANDOM_TIME_DEFAULT.bidAsk);
 
-    timeoutIdList = [...timeoutIdList, priceIntervalID, bidAskIntervalID];
+    const topChangeIntervalID = setInterval(() => {
+      const radomTopStockChange = priceInfoService.getRandomTopStockChange();
+      if (radomTopStockChange) {
+        connectedClientTopStockChange.forEach((clientId) => {
+          io.to(clientId).emit(
+            EVENT_NAME.TOP_STOCK_CHANGE_STREAMING,
+            radomTopStockChange
+          );
+        });
+      }
+    }, RANDOM_TIME_DEFAULT.topStockChangeStreaming);
+
+    const topGroupIntervalID = setInterval(() => {
+      const radomTopStockGroup = priceInfoService.getRandomTopStockGroup();
+      if (radomTopStockGroup) {
+        connectedClientTopStockGroup.forEach((clientId) => {
+          io.to(clientId).emit(
+            EVENT_NAME.TOP_STOCK_GROUP_STREAMING,
+            radomTopStockGroup
+          );
+        });
+      }
+    }, RANDOM_TIME_DEFAULT.topStockGroupStreaming);
+
+    timeoutIdList = [
+      ...timeoutIdList,
+      priceIntervalID,
+      bidAskIntervalID,
+      topChangeIntervalID,
+      topGroupIntervalID,
+    ];
   }
 }
+
+let interValPriceBidAskRandom = null;
+(function randomPriceAndBidAsk() {
+  if (interValPriceBidAskRandom) {
+    clearInterval(interValPriceBidAskRandom);
+  }
+  interValPriceBidAskRandom = setInterval(() => {
+    priceInfoService.randomPriceAndBidAsk();
+  }, 10000);
+})();

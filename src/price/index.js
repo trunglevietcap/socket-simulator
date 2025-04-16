@@ -2,11 +2,20 @@ import {
   HOSE_PRICE_STEP,
   BOARD,
   HNX_UPCOM_PRICE_STEP,
+  TOP_STOCK_TYPE,
 } from "./../constants.js";
-import { ALL_SYMBOL } from "../data/all-symbols.js";
+import { ALL_SYMBOL, HNX30_LIST, VN30_LIST } from "../data/all-symbols.js";
 import { BASE_URL } from "../endPoint.js";
+import { SYMBOLS_INFO } from "./../data/symbols-info.js";
 export const PriceSocketService = () => {
   const _priceInfo = {};
+  const _symbolInfo = {};
+
+  function constructor() {
+    SYMBOLS_INFO.forEach((s) => {
+      _symbolInfo[s.symbol] = s;
+    });
+  }
   let _symbolsSubscriptionMatchPrice = [];
   let _symbolsSubscriptionBidAsk = [];
 
@@ -148,7 +157,6 @@ export const PriceSocketService = () => {
           symbols: ALL_SYMBOL,
         }),
       });
-      console.log(response)
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
@@ -156,7 +164,7 @@ export const PriceSocketService = () => {
       _cachePriceInfo(data);
       return data;
     } catch (error) {
-      console.log('Get price error!', error)
+      console.log("Get price error!", error);
     }
   };
 
@@ -176,8 +184,8 @@ export const PriceSocketService = () => {
       for (let index = 0; index < length; index++) {
         const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
         const symbolRandom = symbolsSubscription[indexRandom];
-        const randomSign = _randomPercent(speed);
-        if (randomSign === 0 && _priceInfo[symbolRandom]) {
+        const randomNumber = _randomPercent(speed);
+        if (randomNumber === 0 && _priceInfo[symbolRandom]) {
           listRandom.push(_handleGetRandomPrice(symbolRandom, 100));
         }
       }
@@ -193,14 +201,115 @@ export const PriceSocketService = () => {
       for (let index = 0; index < length; index++) {
         const indexRandom = +(Math.random() * 1000).toFixed(0) % length;
         const symbolRandom = symbolsSubscription[indexRandom];
-        const randomSign = _randomPercent(speed);
-        if (randomSign === 0 && _priceInfo[symbolRandom]) {
+        const randomNumber = _randomPercent(speed);
+        if (randomNumber === 0 && _priceInfo[symbolRandom]) {
           listRandom.push(_handleGetRandomBidAsk(symbolRandom, 100));
         }
       }
       return listRandom;
     }
   };
+
+  const randomPriceAndBidAsk = () => {
+    ALL_SYMBOL.forEach(() => {
+      const indexRandom =
+        +(Math.random() * 1000).toFixed(0) % ALL_SYMBOL.length;
+      const symbolRandom = _priceInfo[indexRandom];
+      const randomNumber = _randomPercent(100);
+      if (randomNumber === 0 && _priceInfo[symbolRandom]) {
+        _handleGetRandomBidAsk(symbolRandom, 100);
+        _handleGetRandomPrice(symbolRandom, 100);
+      }
+    });
+  };
+
+  const getRandomTopStockChange = () => {
+    const priceInfoList = Object.values(_priceInfo);
+    const getPercentChange = (a) => {
+      if (!a.matchPrice || !a.referencePrice) return undefined;
+      return ((a.matchPrice - a.referencePrice) / a.referencePrice) * 100;
+    };
+    const sortPercentChange = (a, b) => {
+      const percentChangeA = getPercentChange(a);
+      const percentChangeB = getPercentChange(b);
+
+      if (percentChangeA === undefined || percentChangeB === undefined)
+        return 0;
+      return percentChangeB - percentChangeA;
+    };
+    const priceInfoListHNX = priceInfoList
+      ?.filter((item) => item.listingInfo.board === BOARD.HNX)
+      .sort(sortPercentChange);
+
+    const priceInfoListHNXVN30 = priceInfoListHNX.filter((item) => {
+      return HNX30_LIST.includes(item.listingInfo.symbol);
+    });
+    const priceInfoListHOSE = priceInfoList
+      ?.filter((item) => item.listingInfo.board === BOARD.HSX)
+      .sort(sortPercentChange);
+
+    const priceInfoListVN30 = priceInfoListHOSE.filter((item) =>
+      VN30_LIST.includes(item.listingInfo.symbol)
+    );
+    const priceInfoListUPCOM = priceInfoList
+      ?.filter((item) => item.listingInfo.board === BOARD.UPCOM)
+      .sort(sortPercentChange);
+
+    const getRandomTopStockType = () => {
+      const randomIndex = _randomPercent(TOP_STOCK_TYPE.length);
+      return TOP_STOCK_TYPE[randomIndex];
+    };
+    const listPriceSymbolRandom = [
+      ...priceInfoListHNXVN30.slice(0, 15),
+      ...priceInfoListVN30.slice(0, 10),
+      ...priceInfoListHOSE
+        .filter((item) => !VN30_LIST.includes(item.listingInfo.symbol))
+        .slice(0, 80),
+      ...priceInfoListHNX
+        .filter((item) => !HNX30_LIST.includes(item.listingInfo.symbol))
+        .slice(0, 40),
+      ...priceInfoListUPCOM.slice(0, 15),
+    ];
+
+    return listPriceSymbolRandom.map((item) => {
+      const listingInfo = item?.listingInfo;
+      const matchPrice = item.matchPrice.matchPrice;
+
+      return {
+        group: listingInfo.board,
+        hnx30: !!HNX30_LIST.includes(listingInfo.symbol),
+        lastPrice1DayAgo: matchPrice,
+        lastPrice5DaysAgo: matchPrice,
+        lastPrice20DaysAgo: matchPrice,
+        liquidity: 111111111,
+        marketCap: 111111111,
+        stockCode: listingInfo.symbol,
+        topStockType: getRandomTopStockType(),
+        vn30: !!VN30_LIST.includes(listingInfo.symbol),
+      };
+    });
+  };
+
+  const getRandomTopStockGroup = () => {
+    const randomStockChange = getRandomTopStockChange();
+    const randomStockGroup = [];
+
+    randomStockChange.forEach((item) => {
+      const randomNumber = _randomPercent(3);
+      if (randomNumber === 0) {
+        randomStockGroup.push({
+          group: item.group,
+          hnx30: item.hnx30,
+          stockCode: item.stockCode,
+          vn30: item.vn30,
+        });
+      }
+    });
+
+    return randomStockGroup;
+  };
+
+  constructor();
   return {
     handleGetPrice,
     getPriceInfo,
@@ -210,98 +319,25 @@ export const PriceSocketService = () => {
     randomValue,
     setSymbolsSubscriptionMatchPrice,
     setSymbolsSubscriptionBidAsk,
+    randomPriceAndBidAsk,
+    getRandomTopStockChange,
+    getRandomTopStockGroup,
   };
 };
 
-// {
-//   "listingInfo": {
-//     "code": "436",
-//     "symbol": "ACB",
-//     "ceiling": 24900,
-//     "floor": 21700,
-//     "refPrice": 23300,
-//     "stockType": "STOCK",
-//     "board": "HSX",
-//     "exercisePrice": 0,
-//     "exerciseRatio": "",
-//     "maturityDate": "",
-//     "lastTradingDate": "",
-//     "underlyingSymbol": "",
-//     "issuerName": "",
-//     "listedShare": 4466657912,
-//     "receivedTime": "2025-04-11T07:45:04.016Z",
-//     "messageType": "SS",
-//     "type": "STOCK",
-//     "id": 8424512,
-//     "enOrganName": "Asia Commercial Joint Stock Bank",
-//     "enOrganShortName": "Asia Commercial Bank",
-//     "organName": "Ngân hàng Thương mại Cổ phần Á Châu",
-//     "organShortName": "ACB",
-//     "ticker": "ACB",
-//     "priorClosePrice": 23300,
-//     "benefit": "",
-//     "tradingDate": "2025-04-11",
-//     "averageMatchVolume2Week": 24772364,
-//     "partition": 1
-//   },
-//   "bidAsk": {
-//     "code": "436",
-//     "symbol": "ACB",
-//     "session": "ENDED",
-//     "bidPrices": [
-//       {
-//         "price": 24800,
-//         "volume": 82000
-//       },
-//       {
-//         "price": 24750,
-//         "volume": 116700
-//       },
-//       {
-//         "price": 24700,
-//         "volume": 107000
-//       }
-//     ],
-//     "receivedTime": "2025-04-11T07:45:03.864Z",
-//     "messageType": "TP",
-//     "askPrices": [
-//       {
-//         "price": 24850,
-//         "volume": 579000
-//       },
-//       {
-//         "price": 24900,
-//         "volume": 3416100
-//       },
-//       {
-//         "price": 0,
-//         "volume": 0
-//       }
-//     ],
-//     "time": "2025-04-11T00:30:36.000000Z"
-//   },
-//   "matchPrice": {
-//     "code": "436",
-//     "symbol": "ACB",
-//     "matchPrice": 24850,
-//     "matchVol": 542900,
-//     "receivedTime": "2025-04-11T07:51:19.280Z",
-//     "messageType": "TR",
-//     "accumulatedVolume": 35983500,
-//     "accumulatedValue": 883344,
-//     "avgMatchPrice": 24548.584768018674,
-//     "highest": 24900,
-//     "lowest": 23950,
-//     "time": "2025-04-11T07:45:02.000Z",
-//     "session": "ENDED",
-//     "matchType": "unknown",
-//     "foreignBuyVolume": 18406963,
-//     "foreignSellVolume": 12221800,
-//     "currentRoom": 4477737,
-//     "totalRoom": 1339997373,
-//     "totalAccumulatedValue": 905446.5449999898,
-//     "totalAccumulatedVolume": 368750,
-//     "referencePrice": 23300,
-//     "partition": 1
-//   }
-// }
+// group: ESymbolBoardType;
+// hnx30: boolean;
+// lastPrice1DayAgo: number;
+// lastPrice5DaysAgo: number;
+// lastPrice20DaysAgo: number;
+// liquidity: number;
+// marketCap: number;
+// stockCode: string;
+// topStockType:
+//   | 'LOSER_1_D'
+//   | 'LOSER_1_W'
+//   | 'LOSER_1_M'
+//   | 'GAINER_1_D'
+//   | 'GAINER_1_W'
+//   | 'GAINER_1_M';
+// vn30: boolean;
