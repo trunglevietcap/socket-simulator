@@ -242,7 +242,7 @@ export const PriceSocketService = () => {
       .sort(sortPercentChange);
 
     const priceInfoListHNXVN30 = priceInfoList.filter((item) => {
-      return HNX30_LIST.includes(item.listingInfo.symbol);
+      return HNX30_OBJECT[item.listingInfo.symbol];
     });
     const priceInfoListHOSE = priceInfoList
       ?.filter(
