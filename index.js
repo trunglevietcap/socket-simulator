@@ -285,7 +285,7 @@ onValue(marketStatusRef, (snapshot) => {
 });
 onValue(indexRef, (snapshot) => {
   const indexData = snapshot.val();
-  const message = IndexMessage.create(item);
+  const message = IndexMessage.create(indexData);
   const buffer = IndexMessage.encode(message).finish();
   io.emit(EVENT_NAME.INDEX, buffer);
 });
