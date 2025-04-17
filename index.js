@@ -37,6 +37,7 @@ const priceInfoService = PriceSocketService();
 
 let MatchPriceMessage;
 let BidAskMessage;
+let IndexMessage;
 let PERCENT_ITEMS_RANDOM = 50;
 let timeoutIdList = [];
 
@@ -59,6 +60,7 @@ load("price.proto", (err, root) => {
   if (err) throw err;
   MatchPriceMessage = root.lookupType("MatchPriceMessage");
   BidAskMessage = root.lookupType("BidAskMessage");
+  IndexMessage = root.lookupType("IndexMessage");
 });
 
 io.on("connection", (socket) => {
@@ -283,7 +285,9 @@ onValue(marketStatusRef, (snapshot) => {
 });
 onValue(indexRef, (snapshot) => {
   const indexData = snapshot.val();
-  io.emit(EVENT_NAME.INDEX, indexData);
+  const message = IndexMessage.create(item);
+  const buffer = IndexMessage.encode(message).finish();
+  io.emit(EVENT_NAME.INDEX, buffer);
 });
 
 function handleStopSocketPrice() {
