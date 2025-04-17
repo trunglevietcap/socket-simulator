@@ -77,11 +77,11 @@ io.on("connection", (socket) => {
   });
 
   socket.on(EVENT_NAME.TOP_STOCK_CHANGE_STREAMING, (msg) => {
-    connectedClientTopStockChange = connectedClientsMarketStatus.filter(id=>id !==socket.id)
+    connectedClientTopStockChange = connectedClientTopStockChange.filter(id=>id !==socket.id)
     connectedClientTopStockChange.push(socket.id);
   });
   socket.on(EVENT_NAME.TOP_STOCK_GROUP_STREAMING, (msg) => {
-    connectedClientTopStockGroup = connectedClientsMarketStatus.filter(id=>id !==socket.id)
+    connectedClientTopStockGroup = connectedClientTopStockGroup.filter(id=>id !==socket.id)
     connectedClientTopStockGroup.push(socket.id);
   });
 
@@ -189,16 +189,19 @@ io.on("connection", (socket) => {
       (item) => socket.id !== item.id && !item?.symbols?.length
     );
     connectedClientsAppConfig = connectedClientsAppConfig.filter(
-      (item) => socket.id !== item.id && !item?.symbols?.length
+      (item) => socket.id !== item.id
     );
     connectedClientTopStockChange = connectedClientTopStockChange.filter(
-      (item) => socket.id !== item.id && !item?.symbols?.length
+      (item) => socket.id !== item.id
     );
     connectedClientTopStockGroup = connectedClientTopStockGroup.filter(
-      (item) => socket.id !== item.id && !item?.symbols?.length
+      (item) => socket.id !== item.id
     );
     connectedClientIndex = connectedClientIndex.filter(
       (item) => socket.id !== item.id && !item?.symbols?.length
+    );
+    connectedClientsMarketStatus = connectedClientsMarketStatus.filter(
+      (item) => socket.id !== item.id 
     );
   });
 });
