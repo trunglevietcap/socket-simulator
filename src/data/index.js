@@ -1,4 +1,4 @@
-export const INDE = {
+export const INDEX= {
   code: "I#I3",
   symbol: "VN30",
   price: 1296.61,
