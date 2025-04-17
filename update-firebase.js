@@ -35,7 +35,7 @@ export const saveFirebaseData = async () => {
     await set(topStockLoserRef, LOSER_LIST);
     console.log("LOSER_LIST saved");
 
-    await set(topStockGainerRef, MATCH_PRICE);
+    await set(topStockGainerRef, GAINER_LIST);
     console.log("MATCH_PRICE saved");
 
     await set(matchPriceRef, MATCH_PRICE);
