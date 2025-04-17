@@ -45,8 +45,9 @@ export const saveFirebaseData = async () => {
 
     await set(bidAskRef, BID_ASK);
     console.log("BID_ASK saved");
+    
     await set(indexRef, INDEX);
-    console.log("BID_ASK saved");
+    console.log("INDEX saved");
   } catch (error) {
     console.error("Error saving data to Firebase:", error);
   }

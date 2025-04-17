@@ -130,6 +130,7 @@ io.on("connection", (socket) => {
               symbolsObj[s] = true;
             });
           });
+          console.log('user-connection', socket.id)
           priceInfoService.setSymbolsSubscriptionIndex(Object.keys(symbolsObj));
         }
       } catch (error) {
@@ -282,7 +283,7 @@ onValue(marketStatusRef, (snapshot) => {
 });
 onValue(indexRef, (snapshot) => {
   const indexData = snapshot.val();
-  connectedClientsMarketStatus.forEach((clientId) => {
+  connectedClientIndex.forEach((clientId) => {
     if (indexData) {
       io.to(clientId).emit(EVENT_NAME.INDEX, indexData);
     }

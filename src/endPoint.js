@@ -3,6 +3,4 @@ if (isModeDev) {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 }
 
-export const BASE_URL = isModeDev
-  ? "https://trading-qc.vietcap.int"
-  : "https://trading.vietcap.com.vn";
+export const BASE_URL = 'https://trading.vietcap.com.vn'
