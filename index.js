@@ -283,11 +283,7 @@ onValue(marketStatusRef, (snapshot) => {
 });
 onValue(indexRef, (snapshot) => {
   const indexData = snapshot.val();
-  connectedClientIndex.forEach((clientId) => {
-    if (indexData) {
-      io.to(clientId).emit(EVENT_NAME.INDEX, indexData);
-    }
-  });
+  io.emit(EVENT_NAME.INDEX, indexData);
 });
 
 function handleStopSocketPrice() {
