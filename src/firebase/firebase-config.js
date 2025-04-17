@@ -1,11 +1,17 @@
 // firebase-config.js
 import { initializeApp } from "firebase/app";
 import { getDatabase } from "firebase/database";
+import { ref } from "firebase/database";
 
 export const FIREBASE_DB_NAME = {
   APP_CONFIG: 'APP_CONFIG',
   MARKET_STATUS: 'MARKET_STATUS',
-  SOCKET_CONFIG: 'SOCKET_CONFIG'
+  SOCKET_CONFIG: 'SOCKET_CONFIG',
+  GAINER_LIST: 'GAINER_LIST',
+  LOSER_LIST: 'LOSER_LIST',
+  MATCH_PRICE: 'MATCH_PRICE',
+  BID_ASK: 'BID_ASK',
+  TOP_STOCK_GROUP: 'TOP_STOCK_GROUP'
 }
 
 const firebaseConfig = {
@@ -23,3 +29,21 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 export { db };
+
+export const socketConfigRef = ref(db, FIREBASE_DB_NAME.SOCKET_CONFIG);
+export const topStockLoserRef = ref(db, FIREBASE_DB_NAME.LOSER_LIST);
+export const topStockGainerRef = ref(db, FIREBASE_DB_NAME.GAINER_LIST);
+export const topStockGroupRef = ref(db, FIREBASE_DB_NAME.TOP_STOCK_GROUP);
+export const matchPriceRef = ref(db, FIREBASE_DB_NAME.MATCH_PRICE);
+export const bidAskRef = ref(db, FIREBASE_DB_NAME.BID_ASK);
+export const appConfigRef = ref(db, FIREBASE_DB_NAME.APP_CONFIG);
+export const marketStatusRef = ref(db, FIREBASE_DB_NAME.MARKET_STATUS);
+export const resetDataFirebaseRef = ref(
+  db,
+  `${FIREBASE_DB_NAME.SOCKET_CONFIG}/resetDataFirebase`
+);
+
+export const reUpdatePriceRef = ref(
+  db,
+  `${FIREBASE_DB_NAME.APP_CONFIG}/reUpdatePrice`
+);

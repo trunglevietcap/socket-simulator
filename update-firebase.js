@@ -1,17 +1,19 @@
-import { ref, set, onValue } from "firebase/database";
-import { db } from "./src/firebase/firebase-config.js";
+import { set, onValue } from "firebase/database";
+import {
+  bidAskRef,
+  matchPriceRef,
+  topStockGainerRef,
+  topStockLoserRef,
+  socketConfigRef,
+  resetDataFirebaseRef,
+  marketStatusRef,
+  appConfigRef,
+} from "./src/firebase/firebase-config.js";
 import { APP_CONFIG } from "./src/data/app-config.js";
 import { MARKET_STATUS_ALL } from "./src/data/market-status.js";
 import { SOCKET_CONFIG } from "./src/data/socket-config.js";
-export const FIREBASE_DB_NAME = {
-  APP_CONFIG: 'APP_CONFIG',
-  MARKET_STATUS: 'MARKET_STATUS',
-  SOCKET_CONFIG: 'SOCKET_CONFIG'
-}
-const appConfigRef = ref(db, FIREBASE_DB_NAME.APP_CONFIG);
-const marketStatusRef = ref(db, FIREBASE_DB_NAME.MARKET_STATUS);
-const resetDataFirebaseRef = ref(db, `${FIREBASE_DB_NAME.SOCKET_CONFIG}/resetDataFirebase`);
-const socketConfigRef = ref(db, `${FIREBASE_DB_NAME.SOCKET_CONFIG}`);
+import { GAINER_LIST, LOSER_LIST } from "./src/data/top-stock.js";
+import { MATCH_PRICE, BID_ASK } from "./src/data/price-bid-ask.js";
 onValue(resetDataFirebaseRef, (snapshot) => {
   const resetDataFirebase = snapshot.val();
   if (resetDataFirebase) {
@@ -29,6 +31,18 @@ export const saveFirebaseData = async () => {
 
     await set(socketConfigRef, SOCKET_CONFIG);
     console.log("SOCKET_CONFIG saved");
+
+    await set(topStockLoserRef, LOSER_LIST);
+    console.log("LOSER_LIST saved");
+
+    await set(topStockGainerRef, MATCH_PRICE);
+    console.log("MATCH_PRICE saved");
+
+    await set(matchPriceRef, MATCH_PRICE);
+    console.log("MATCH_PRICE saved");
+
+    await set(bidAskRef, BID_ASK);
+    console.log("BID_ASK saved");
   } catch (error) {
     console.error("Error saving data to Firebase:", error);
   }

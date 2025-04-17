@@ -4,9 +4,18 @@ import protobuf from "protobufjs"; // Import default
 import { EVENT_NAME } from "./src/constants.js";
 import { Server } from "socket.io";
 import { PriceSocketService } from "./src/price/index.js";
-import { db } from "./src/firebase/firebase-config.js";
-import { ref, onValue, set } from "firebase/database";
-import { FIREBASE_DB_NAME } from "./src/firebase/firebase-config.js";
+import { onValue, set } from "firebase/database";
+import {
+  bidAskRef,
+  matchPriceRef,
+  topStockGainerRef,
+  topStockLoserRef,
+  socketConfigRef,
+  marketStatusRef,
+  appConfigRef,
+  reUpdatePriceRef,
+  topStockGroupRef,
+} from "./src/firebase/firebase-config.js";
 
 const { load } = protobuf;
 const app = express();
@@ -150,15 +159,50 @@ server.listen(8080, () => {
   console.log("Server is listening");
 });
 
-// firebase - db realtime
-const appConfigRef = ref(db, FIREBASE_DB_NAME.APP_CONFIG);
-const socketConfigRef = ref(db, FIREBASE_DB_NAME.SOCKET_CONFIG);
-const marketStatusRef = ref(db, FIREBASE_DB_NAME.MARKET_STATUS);
+// Firebase
 
 onValue(appConfigRef, (snapshot) => {
   const configData = snapshot.val();
   connectedClientsAppConfig.forEach((clientId) => {
     io.to(clientId).emit(EVENT_NAME.APP_CONFIG, configData);
+  });
+});
+
+onValue(bidAskRef, (snapshot) => {
+  const bidAskData = snapshot.val();
+  connectedClientsBidAsk.forEach((clientId) => {
+    io.to(clientId).emit(EVENT_NAME.BID_ASK, bidAskData);
+  });
+});
+
+onValue(matchPriceRef, (snapshot) => {
+  const matchPrice = snapshot.val();
+  connectedClientsPrice.forEach((clientId) => {
+    io.to(clientId).emit(EVENT_NAME.MATCH_PRICE, matchPrice);
+  });
+});
+
+onValue(topStockGainerRef, (snapshot) => {
+  const stopStockGainer = snapshot.val();
+  connectedClientTopStockChange.forEach((clientId) => {
+    io.to(clientId).emit(
+      EVENT_NAME.TOP_STOCK_CHANGE_STREAMING,
+      stopStockGainer
+    );
+  });
+});
+
+onValue(topStockLoserRef, (snapshot) => {
+  const topStockLoser = snapshot.val();
+  connectedClientTopStockChange.forEach((clientId) => {
+    io.to(clientId).emit(EVENT_NAME.TOP_STOCK_CHANGE_STREAMING, topStockLoser);
+  });
+});
+
+onValue(topStockGroupRef, (snapshot) => {
+  const topStockGroup = snapshot.val();
+  connectedClientTopStockGroup.forEach((clientId) => {
+    io.to(clientId).emit(EVENT_NAME.TOP_STOCK_GROUP_STREAMING, topStockGroup);
   });
 });
 
@@ -169,10 +213,6 @@ onValue(socketConfigRef, (snapshot) => {
   stop ? handleStopSocketPrice() : handleUpdateSpeed();
 });
 
-const reUpdatePriceRef = ref(
-  db,
-  `${FIREBASE_DB_NAME.APP_CONFIG}/reUpdatePrice`
-);
 onValue(reUpdatePriceRef, (snapshot) => {
   const reUpdatePrice = snapshot.val();
   if (reUpdatePrice) {
@@ -273,13 +313,3 @@ function handleUpdateSpeed() {
     ];
   }
 }
-
-let interValPriceBidAskRandom = null;
-(function randomPriceAndBidAsk() {
-  if (interValPriceBidAskRandom) {
-    clearInterval(interValPriceBidAskRandom);
-  }
-  interValPriceBidAskRandom = setInterval(() => {
-    priceInfoService.randomPriceAndBidAsk();
-  }, 10000);
-})();

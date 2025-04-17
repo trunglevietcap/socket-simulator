@@ -238,7 +238,11 @@ export const PriceSocketService = () => {
       return percentChangeB - percentChangeA;
     };
     const priceInfoListHNX = priceInfoList
-      ?.filter((item) => item.listingInfo.board === BOARD.HNX && !HNX30_OBJECT[item.listingInfo.symbol])
+      ?.filter(
+        (item) =>
+          item.listingInfo.board === BOARD.HNX &&
+          !HNX30_OBJECT[item.listingInfo.symbol]
+      )
       .sort(sortPercentChange);
 
     const priceInfoListHNXVN30 = priceInfoList.filter((item) => {
@@ -252,8 +256,8 @@ export const PriceSocketService = () => {
       )
       .sort(sortPercentChange);
 
-    const priceInfoListVN30 = priceInfoList.filter((item) =>
-      VN30_LIST.includes(item.listingInfo.symbol)
+    const priceInfoListVN30 = priceInfoList.filter(
+      (item) => VN30_OBJECT[item.listingInfo.symbol]
     );
     const priceInfoListUPCOM = priceInfoList
       ?.filter((item) => item.listingInfo.board === BOARD.UPCOM)
