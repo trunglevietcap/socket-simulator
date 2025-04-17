@@ -18,6 +18,7 @@ export const PriceSocketService = () => {
   }
   let _symbolsSubscriptionMatchPrice = [];
   let _symbolsSubscriptionBidAsk = [];
+  let _symbolsSubscriptionIndex= [];
 
   const _cachePriceInfo = (priceList) => {
     priceList.forEach((item) => {
@@ -35,6 +36,10 @@ export const PriceSocketService = () => {
 
   const setSymbolsSubscriptionMatchPrice = (symbols) => {
     _symbolsSubscriptionMatchPrice = symbols;
+  };
+
+  const setSymbolsSubscriptionIndex = (symbols) => {
+    _symbolsSubscriptionIndex = symbols;
   };
   const setSymbolsSubscriptionBidAsk = (symbols) => {
     _symbolsSubscriptionBidAsk = symbols;
@@ -330,6 +335,7 @@ export const PriceSocketService = () => {
     randomPriceAndBidAsk,
     getRandomTopStockChange,
     getRandomTopStockGroup,
+    setSymbolsSubscriptionIndex
   };
 };
 

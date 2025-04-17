@@ -15,6 +15,7 @@ import {
   appConfigRef,
   reUpdatePriceRef,
   topStockGroupRef,
+  indexsRef,
 } from "./src/firebase/firebase-config.js";
 
 const { load } = protobuf;
@@ -30,6 +31,7 @@ let connectedClientsBidAsk = [];
 let connectedClientsAppConfig = [];
 let connectedClientTopStockChange = [];
 let connectedClientTopStockGroup = [];
+let connectedClientIndex = [];
 
 const priceInfoService = PriceSocketService();
 
@@ -108,6 +110,35 @@ io.on("connection", (socket) => {
       socket.emit("ERROR", "Message empty");
     }
   });
+  socket.on(EVENT_NAME.INDEX, (msg) => {
+    if (msg) {
+      try {
+        const data = JSON.parse(msg);
+        if (Array.isArray(data?.symbols)) {
+          connectedClientIndex = connectedClientIndex.filter(
+            (item) => item.id !== socket.id
+          );
+          data?.symbols.length &&
+            connectedClientIndex.push({
+              id: socket.id,
+              symbols: data?.symbols || [],
+            });
+
+          const symbolsObj = {};
+          connectedClientIndex.forEach((item) => {
+            item.symbols.forEach((s) => {
+              symbolsObj[s] = true;
+            });
+          });
+          priceInfoService.setSymbolsSubscriptionIndex(Object.keys(symbolsObj));
+        }
+      } catch (error) {
+        socket.emit("ERROR", "Message emit incorrect format");
+      }
+    } else {
+      socket.emit("ERROR", "Message empty");
+    }
+  });
 
   socket.on(EVENT_NAME.BID_ASK, (msg) => {
     connectedClientsBidAsk = connectedClientsBidAsk.filter(
@@ -151,6 +182,15 @@ io.on("connection", (socket) => {
       (item) => socket.id !== item.id && !item?.symbols?.length
     );
     connectedClientsAppConfig = connectedClientsAppConfig.filter(
+      (item) => socket.id !== item.id && !item?.symbols?.length
+    );
+    connectedClientTopStockChange = connectedClientTopStockChange.filter(
+      (item) => socket.id !== item.id && !item?.symbols?.length
+    );
+    connectedClientTopStockGroup = connectedClientTopStockGroup.filter(
+      (item) => socket.id !== item.id && !item?.symbols?.length
+    );
+    connectedClientIndex = connectedClientIndex.filter(
       (item) => socket.id !== item.id && !item?.symbols?.length
     );
   });
@@ -228,6 +268,23 @@ onValue(marketStatusRef, (snapshot) => {
       Object.values(marketStatusData).forEach((ms) => {
         io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, ms);
       });
+    }
+  });
+});
+
+onValue(marketStatusRef, (snapshot) => {
+  const marketStatusData = snapshot.val();
+  connectedClientsMarketStatus.forEach((clientId) => {
+    if (marketStatusData) {
+      io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, marketStatusData);
+    }
+  });
+});
+onValue(indexsRef, (snapshot) => {
+  const indexData = snapshot.val();
+  connectedClientsMarketStatus.forEach((clientId) => {
+    if (indexData) {
+      io.to(clientId).emit(EVENT_NAME.INDEX, indexData);
     }
   });
 });

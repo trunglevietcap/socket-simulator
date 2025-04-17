@@ -11,7 +11,8 @@ export const FIREBASE_DB_NAME = {
   LOSER_LIST: 'LOSER_LIST',
   MATCH_PRICE: 'MATCH_PRICE',
   BID_ASK: 'BID_ASK',
-  TOP_STOCK_GROUP: 'TOP_STOCK_GROUP'
+  TOP_STOCK_GROUP: 'TOP_STOCK_GROUP',
+  INDEXS: 'INDEXS'
 }
 
 const firebaseConfig = {
@@ -38,6 +39,7 @@ export const matchPriceRef = ref(db, FIREBASE_DB_NAME.MATCH_PRICE);
 export const bidAskRef = ref(db, FIREBASE_DB_NAME.BID_ASK);
 export const appConfigRef = ref(db, FIREBASE_DB_NAME.APP_CONFIG);
 export const marketStatusRef = ref(db, FIREBASE_DB_NAME.MARKET_STATUS);
+export const indexsRef = ref(db, FIREBASE_DB_NAME.INDEXS);
 export const resetDataFirebaseRef = ref(
   db,
   `${FIREBASE_DB_NAME.SOCKET_CONFIG}/resetDataFirebase`

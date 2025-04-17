@@ -8,12 +8,14 @@ import {
   resetDataFirebaseRef,
   marketStatusRef,
   appConfigRef,
+  indexsRef,
 } from "./src/firebase/firebase-config.js";
 import { APP_CONFIG } from "./src/data/app-config.js";
 import { MARKET_STATUS_ALL } from "./src/data/market-status.js";
 import { SOCKET_CONFIG } from "./src/data/socket-config.js";
 import { GAINER_LIST, LOSER_LIST } from "./src/data/top-stock.js";
 import { MATCH_PRICE, BID_ASK } from "./src/data/price-bid-ask.js";
+import { MATCH_PRICE, INDEXS } from "./src/data/indexs.js";
 onValue(resetDataFirebaseRef, (snapshot) => {
   const resetDataFirebase = snapshot.val();
   if (resetDataFirebase) {
@@ -42,6 +44,8 @@ export const saveFirebaseData = async () => {
     console.log("MATCH_PRICE saved");
 
     await set(bidAskRef, BID_ASK);
+    console.log("BID_ASK saved");
+    await set(indexsRef, INDEXS);
     console.log("BID_ASK saved");
   } catch (error) {
     console.error("Error saving data to Firebase:", error);
