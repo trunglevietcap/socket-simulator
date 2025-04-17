@@ -15,7 +15,7 @@ import { MARKET_STATUS_ALL } from "./src/data/market-status.js";
 import { SOCKET_CONFIG } from "./src/data/socket-config.js";
 import { GAINER_LIST, LOSER_LIST } from "./src/data/top-stock.js";
 import { MATCH_PRICE, BID_ASK } from "./src/data/price-bid-ask.js";
-import { MATCH_PRICE, INDEXS } from "./src/data/indexs.js";
+import { INDEX } from "./src/data/index.js";
 onValue(resetDataFirebaseRef, (snapshot) => {
   const resetDataFirebase = snapshot.val();
   if (resetDataFirebase) {
