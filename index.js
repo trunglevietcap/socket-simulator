@@ -67,17 +67,21 @@ io.on("connection", (socket) => {
   socket.emit("SUCCESS", "HELLO WOLD - socket simulator connected!");
 
   socket.on(EVENT_NAME.MARKET_STATUS, (msg) => {
+    const connectedClientsMarketStatus = connectedClientsMarketStatus.filter(id=>id !==socket.id)
     connectedClientsMarketStatus.push(socket.id);
   });
 
   socket.on(EVENT_NAME.APP_CONFIG, (msg) => {
+    const connectedClientsAppConfig = connectedClientsMarketStatus.filter(id=>id !==socket.id)
     connectedClientsAppConfig.push(socket.id);
   });
 
   socket.on(EVENT_NAME.TOP_STOCK_CHANGE_STREAMING, (msg) => {
+    const connectedClientTopStockChange = connectedClientsMarketStatus.filter(id=>id !==socket.id)
     connectedClientTopStockChange.push(socket.id);
   });
   socket.on(EVENT_NAME.TOP_STOCK_GROUP_STREAMING, (msg) => {
+    const connectedClientTopStockGroup = connectedClientsMarketStatus.filter(id=>id !==socket.id)
     connectedClientTopStockGroup.push(socket.id);
   });
 
