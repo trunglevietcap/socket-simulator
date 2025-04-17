@@ -8,7 +8,7 @@ import {
   resetDataFirebaseRef,
   marketStatusRef,
   appConfigRef,
-  indexsRef,
+  indexRef,
 } from "./src/firebase/firebase-config.js";
 import { APP_CONFIG } from "./src/data/app-config.js";
 import { MARKET_STATUS_ALL } from "./src/data/market-status.js";
@@ -45,7 +45,7 @@ export const saveFirebaseData = async () => {
 
     await set(bidAskRef, BID_ASK);
     console.log("BID_ASK saved");
-    await set(indexsRef, INDEXS);
+    await set(indexRef, INDEX);
     console.log("BID_ASK saved");
   } catch (error) {
     console.error("Error saving data to Firebase:", error);

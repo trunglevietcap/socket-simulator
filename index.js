@@ -15,7 +15,7 @@ import {
   appConfigRef,
   reUpdatePriceRef,
   topStockGroupRef,
-  indexsRef,
+  indexRef,
 } from "./src/firebase/firebase-config.js";
 
 const { load } = protobuf;
@@ -280,7 +280,7 @@ onValue(marketStatusRef, (snapshot) => {
     }
   });
 });
-onValue(indexsRef, (snapshot) => {
+onValue(indexRef, (snapshot) => {
   const indexData = snapshot.val();
   connectedClientsMarketStatus.forEach((clientId) => {
     if (indexData) {
