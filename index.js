@@ -132,7 +132,7 @@ io.on("connection", (socket) => {
               symbolsObj[s] = true;
             });
           });
-          console.log('user-connection', socket.id)
+          console.log("user-connection", socket.id);
           priceInfoService.setSymbolsSubscriptionIndex(Object.keys(symbolsObj));
         }
       } catch (error) {
@@ -287,7 +287,11 @@ onValue(indexRef, (snapshot) => {
   const indexData = snapshot.val();
   const message = IndexMessage.create(indexData);
   const buffer = IndexMessage.encode(message).finish();
-  io.emit(EVENT_NAME.INDEX, buffer);
+  connectedClientIndex.forEach((client) => {
+    if (client.symbols && client.symbols.includes(item.symbol)) {
+      io.to(client.id).emit(EVENT_NAME.INDEX, buffer);
+    }
+  });
 });
 
 function handleStopSocketPrice() {
