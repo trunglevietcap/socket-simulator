@@ -1,5 +1,5 @@
 export const SOCKET_CONFIG = {
-  speedPrice: 1,
+  speedPrice: 10,
   stopPrice: false,
   resetDataFirebase: false,
   reUpdatePrice: false
