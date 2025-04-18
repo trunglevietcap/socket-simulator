@@ -42,8 +42,8 @@ let PERCENT_ITEMS_RANDOM = 50;
 let timeoutIdList = [];
 
 const RANDOM_TIME_DEFAULT = {
-  matchPrice: 50,
-  bidAsk: 50,
+  matchPrice: 500,
+  bidAsk: 400,
   topStockGroupStreaming: 10000,
   topStockChangeStreaming: 15000,
 };

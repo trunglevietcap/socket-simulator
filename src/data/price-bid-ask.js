@@ -27,11 +27,38 @@ export const MATCH_PRICE = {
 };
 
 export const BID_ASK = {
-  bidPrices: [],
-  askPrices: [],
-  code: "CAP",
-  symbol: "CAP",
-  session: "CLOSED",
-  time: "2025-04-17T01:05:04.000000Z",
+  code: "436",
+  symbol: "ACB",
+  session: "ENDED",
+  bidPrices: [
+    {
+      price: 24500,
+      volume: 220300,
+    },
+    {
+      price: 24450,
+      volume: 113000,
+    },
+    {
+      price: 24400,
+      volume: 91900,
+    },
+  ],
+  receivedTime: "2025-04-18T07:45:03.133Z",
   messageType: "TP",
+  askPrices: [
+    {
+      price: 24550,
+      volume: 36000,
+    },
+    {
+      price: 24600,
+      volume: 69800,
+    },
+    {
+      price: 24650,
+      volume: 73500,
+    },
+  ],
+  time: "2025-04-18T00:30:05.000000Z",
 };
