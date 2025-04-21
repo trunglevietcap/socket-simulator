@@ -294,29 +294,45 @@ onValue(appConfigRef, (snapshot) => {
 
 onValue(bidAskRef, (snapshot) => {
   const bidAskData = snapshot.val();
-  connectedClientsBidAsk.forEach((clientId) => {
-    io.to(clientId).emit(EVENT_NAME.BID_ASK, bidAskData);
+  const message = BidAskMessage.create(bidAskData);
+  const buffer = BidAskMessage.encode(message).finish();
+  connectedClientsBidAsk.forEach((client) => {
+    if (client.symbols?.includes(bidAskData.symbol)) {
+      io.to(client.id).emit(EVENT_NAME.BID_ASK, buffer);
+    }
   });
 });
 
 onValue(bidAskBuyInRef, (snapshot) => {
   const bidAskData = snapshot.val();
-  connectedClientsBidAskBuyIn.forEach((clientId) => {
-    io.to(clientId).emit(EVENT_NAME.BID_ASK_BUY_IN, bidAskData);
+  const message = BidAskMessage.create(bidAskData);
+  const buffer = BidAskMessage.encode(message).finish();
+  connectedClientsBidAskBuyIn.forEach((client) => {
+    if (client.symbols?.includes(bidAskData.symbol)) {
+      io.to(client.id).emit(EVENT_NAME.BID_ASK_BUY_IN, buffer);
+    }
   });
 });
 
 onValue(matchPriceRef, (snapshot) => {
   const matchPrice = snapshot.val();
-  connectedClientsPrice.forEach((clientId) => {
-    io.to(clientId).emit(EVENT_NAME.MATCH_PRICE, matchPrice);
+  const message = MatchPriceMessage.create(matchPrice);
+  const buffer = MatchPriceMessage.encode(message).finish();
+  connectedClientsPrice.forEach((client) => {
+    if (client.symbols?.includes(matchPrice.symbol)) {
+      io.to(client.id).emit(EVENT_NAME.MATCH_PRICE, buffer);
+    }
   });
 });
 
 onValue(matchPriceBuyInRef, (snapshot) => {
   const matchPrice = snapshot.val();
-  connectedClientsPriceBuyIn.forEach((clientId) => {
-    io.to(clientId).emit(EVENT_NAME.MATCH_PRICE_BUY_IN, matchPrice);
+  const message = MatchPriceMessage.create(matchPrice);
+  const buffer = MatchPriceMessage.encode(message).finish();
+  connectedClientsPriceBuyIn.forEach((client) => {
+    if (client.symbols?.includes(matchPrice.symbol)) {
+      io.to(client.id).emit(EVENT_NAME.MATCH_PRICE_BUY_IN, buffer);
+    }
   });
 });
 
