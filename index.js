@@ -16,6 +16,8 @@ import {
   reUpdatePriceRef,
   topStockGroupRef,
   indexRef,
+  matchPriceBuyInRef,
+  bidAskBuyInRef,
 } from "./src/firebase/firebase-config.js";
 
 const { load } = protobuf;
@@ -27,7 +29,9 @@ const io = new Server(server, {
 
 let connectedClientsMarketStatus = [];
 let connectedClientsPrice = [];
+let connectedClientsPriceBuyIn = [];
 let connectedClientsBidAsk = [];
+let connectedClientsBidAskBuyIn = [];
 let connectedClientsAppConfig = [];
 let connectedClientTopStockChange = [];
 let connectedClientTopStockGroup = [];
@@ -67,21 +71,29 @@ io.on("connection", (socket) => {
   socket.emit("SUCCESS", "HELLO WOLD - socket simulator connected!");
 
   socket.on(EVENT_NAME.MARKET_STATUS, (msg) => {
-    connectedClientsMarketStatus = connectedClientsMarketStatus.filter(id=>id !==socket.id)
+    connectedClientsMarketStatus = connectedClientsMarketStatus.filter(
+      (id) => id !== socket.id
+    );
     connectedClientsMarketStatus.push(socket.id);
   });
 
   socket.on(EVENT_NAME.APP_CONFIG, (msg) => {
-     connectedClientsAppConfig = connectedClientsMarketStatus.filter(id=>id !==socket.id)
+    connectedClientsAppConfig = connectedClientsMarketStatus.filter(
+      (id) => id !== socket.id
+    );
     connectedClientsAppConfig.push(socket.id);
   });
 
   socket.on(EVENT_NAME.TOP_STOCK_CHANGE_STREAMING, (msg) => {
-    connectedClientTopStockChange = connectedClientTopStockChange.filter(id=>id !==socket.id)
+    connectedClientTopStockChange = connectedClientTopStockChange.filter(
+      (id) => id !== socket.id
+    );
     connectedClientTopStockChange.push(socket.id);
   });
   socket.on(EVENT_NAME.TOP_STOCK_GROUP_STREAMING, (msg) => {
-    connectedClientTopStockGroup = connectedClientTopStockGroup.filter(id=>id !==socket.id)
+    connectedClientTopStockGroup = connectedClientTopStockGroup.filter(
+      (id) => id !== socket.id
+    );
     connectedClientTopStockGroup.push(socket.id);
   });
 
@@ -101,6 +113,37 @@ io.on("connection", (socket) => {
 
           const symbolsObj = {};
           connectedClientsPrice.forEach((item) => {
+            item.symbols.forEach((s) => {
+              symbolsObj[s] = true;
+            });
+          });
+          priceInfoService.setSymbolsSubscriptionMatchPrice(
+            Object.keys(symbolsObj)
+          );
+        }
+      } catch (error) {
+        socket.emit("ERROR", "Message emit incorrect format");
+      }
+    } else {
+      socket.emit("ERROR", "Message empty");
+    }
+  });
+  socket.on(EVENT_NAME.MATCH_PRICE_BUY_IN, (msg) => {
+    if (msg) {
+      try {
+        const data = JSON.parse(msg);
+        if (Array.isArray(data?.symbols)) {
+          connectedClientsPriceBuyIn = connectedClientsPriceBuyIn.filter(
+            (item) => item.id !== socket.id
+          );
+          data?.symbols.length &&
+            connectedClientsPriceBuyIn.push({
+              id: socket.id,
+              symbols: data?.symbols || [],
+            });
+
+          const symbolsObj = {};
+          connectedClientsPriceBuyIn.forEach((item) => {
             item.symbols.forEach((s) => {
               symbolsObj[s] = true;
             });
@@ -178,6 +221,37 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on(EVENT_NAME.BID_ASK_BUY_IN, (msg) => {
+    connectedClientsBidAskBuyIn = connectedClientsBidAskBuyIn.filter(
+      (item) => item.id !== socket.id
+    );
+    if (msg) {
+      try {
+        const data = JSON.parse(msg);
+        if (Array.isArray(data?.symbols)) {
+          data?.symbols.length &&
+            connectedClientsBidAskBuyIn.push({
+              id: socket.id,
+              symbols: data?.symbols || [],
+            });
+          const symbolsObj = {};
+          connectedClientsBidAskBuyIn.forEach((item) => {
+            item.symbols.forEach((s) => {
+              symbolsObj[s] = true;
+            });
+          });
+          priceInfoService.setSymbolsSubscriptionBidAsk(
+            Object.keys(symbolsObj)
+          );
+        }
+      } catch (error) {
+        socket.emit("ERROR", "Message emit incorrect format");
+      }
+    } else {
+      socket.emit("ERROR", "Message empty");
+    }
+  });
+
   socket.on("disconnect", () => {
     connectedClientsMarketStatus = connectedClientsMarketStatus.filter(
       (id) => socket.id !== id
@@ -201,7 +275,7 @@ io.on("connection", (socket) => {
       (item) => socket.id !== item.id && !item?.symbols?.length
     );
     connectedClientsMarketStatus = connectedClientsMarketStatus.filter(
-      (item) => socket.id !== item.id 
+      (item) => socket.id !== item.id
     );
   });
 });
@@ -225,10 +299,24 @@ onValue(bidAskRef, (snapshot) => {
   });
 });
 
+onValue(bidAskBuyInRef, (snapshot) => {
+  const bidAskData = snapshot.val();
+  connectedClientsBidAskBuyIn.forEach((clientId) => {
+    io.to(clientId).emit(EVENT_NAME.BID_ASK_BUY_IN, bidAskData);
+  });
+});
+
 onValue(matchPriceRef, (snapshot) => {
   const matchPrice = snapshot.val();
   connectedClientsPrice.forEach((clientId) => {
     io.to(clientId).emit(EVENT_NAME.MATCH_PRICE, matchPrice);
+  });
+});
+
+onValue(matchPriceBuyInRef, (snapshot) => {
+  const matchPrice = snapshot.val();
+  connectedClientsPriceBuyIn.forEach((clientId) => {
+    io.to(clientId).emit(EVENT_NAME.MATCH_PRICE_BUY_IN, matchPrice);
   });
 });
 
@@ -263,11 +351,11 @@ onValue(socketConfigRef, (snapshot) => {
   stop ? handleStopSocketPrice() : handleUpdateSpeed();
 });
 
-onValue(reUpdatePriceRef, (snapshot) => {
+onValue(reUpdatePriceRef, async (snapshot) => {
   const reUpdatePrice = snapshot.val();
   if (reUpdatePrice) {
-    handleGetPrice();
     set(reUpdatePriceRef, false);
+    handleGetPrice();
   }
 });
 

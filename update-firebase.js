@@ -9,12 +9,19 @@ import {
   marketStatusRef,
   appConfigRef,
   indexRef,
+  matchPriceBuyInRef,
+  bidAskBuyInRef,
 } from "./src/firebase/firebase-config.js";
 import { APP_CONFIG } from "./src/data/app-config.js";
 import { MARKET_STATUS_ALL } from "./src/data/market-status.js";
 import { SOCKET_CONFIG } from "./src/data/socket-config.js";
 import { GAINER_LIST, LOSER_LIST } from "./src/data/top-stock.js";
-import { MATCH_PRICE, BID_ASK } from "./src/data/price-bid-ask.js";
+import {
+  MATCH_PRICE,
+  BID_ASK,
+  MATCH_PRICE_BUY_IN,
+  BID_ASK_BUY_IN,
+} from "./src/data/price-bid-ask.js";
 import { INDEX } from "./src/data/index.js";
 onValue(resetDataFirebaseRef, (snapshot) => {
   const resetDataFirebase = snapshot.val();
@@ -45,7 +52,13 @@ export const saveFirebaseData = async () => {
 
     await set(bidAskRef, BID_ASK);
     console.log("BID_ASK saved");
-    
+
+    await set(matchPriceBuyInRef, MATCH_PRICE_BUY_IN);
+    console.log("MATCH_PRICE saved");
+
+    await set(bidAskBuyInRef, BID_ASK_BUY_IN);
+    console.log("BID_ASK saved");
+
     await set(indexRef, INDEX);
     console.log("INDEX saved");
   } catch (error) {

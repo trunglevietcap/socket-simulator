@@ -1,6 +1,8 @@
 export const EVENT_NAME = {
   BID_ASK: "bid-ask",
   MATCH_PRICE: "match-price",
+  BID_ASK_BUY_IN: "buy-in-bid-ask",
+  MATCH_PRICE_BUY_IN: "buy-in-match-price",
   ODD_LOT_BID_ASK: "odd-lot-bid-ask",
   ODD_LOT_MATCH_PRICE: "odd-lot-match-price",
   INDEX: "index",
