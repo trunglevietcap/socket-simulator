@@ -43,6 +43,10 @@ export const bidAskRef = ref(db, FIREBASE_DB_NAME.BID_ASK);
 export const bidAskBuyInRef = ref(db, FIREBASE_DB_NAME.BID_ASK_BUY_IN);
 export const appConfigRef = ref(db, FIREBASE_DB_NAME.APP_CONFIG);
 export const marketStatusRef = ref(db, FIREBASE_DB_NAME.MARKET_STATUS);
+export const marketStatusHNXRef = ref(db, `${FIREBASE_DB_NAME.MARKET_STATUS}/UPCOM`);
+export const marketStatusHOSERef = ref(db, `${FIREBASE_DB_NAME.MARKET_STATUS}/HOSE`);
+export const marketStatusUPCOMRef = ref(db, `${FIREBASE_DB_NAME.MARKET_STATUS}/UPCOM`);
+export const marketStatusDERIVATIVESRef = ref(db, `${FIREBASE_DB_NAME.MARKET_STATUS}/DERIVATIVES`);
 export const indexRef = ref(db, FIREBASE_DB_NAME.INDEX);
 export const resetDataFirebaseRef = ref(
   db,

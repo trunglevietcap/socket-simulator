@@ -11,13 +11,16 @@ import {
   topStockGainerRef,
   topStockLoserRef,
   socketConfigRef,
-  marketStatusRef,
   appConfigRef,
   reUpdatePriceRef,
   topStockGroupRef,
   indexRef,
   matchPriceBuyInRef,
   bidAskBuyInRef,
+  marketStatusHNXRef,
+  marketStatusHOSERef,
+  marketStatusUPCOMRef,
+  marketStatusDERIVATIVESRef,
 } from "./src/firebase/firebase-config.js";
 
 const { load } = protobuf;
@@ -375,23 +378,21 @@ onValue(reUpdatePriceRef, async (snapshot) => {
   }
 });
 
-onValue(marketStatusRef, (snapshot) => {
-  const marketStatusData = snapshot.val();
-  connectedClientsMarketStatus.forEach((clientId) => {
-    if (marketStatusData) {
-      Object.values(marketStatusData).forEach((ms) => {
-        io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, ms);
-      });
-    }
-  });
-});
-
-onValue(marketStatusRef, (snapshot) => {
-  const marketStatusData = snapshot.val();
-  connectedClientsMarketStatus.forEach((clientId) => {
-    if (marketStatusData) {
-      io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, marketStatusData);
-    }
+[
+  marketStatusHOSERef,
+  marketStatusHNXRef,
+  marketStatusDERIVATIVESRef,
+  marketStatusUPCOMRef,
+].forEach((item) => {
+  onValue(item, (snapshot) => {
+    const marketStatusData = snapshot.val();
+    connectedClientsMarketStatus.forEach((clientId) => {
+      if (marketStatusData) {
+        Object.values(marketStatusData).forEach((ms) => {
+          io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, ms);
+        });
+      }
+    });
   });
 });
 onValue(indexRef, (snapshot) => {
