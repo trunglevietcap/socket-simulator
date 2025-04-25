@@ -388,9 +388,7 @@ onValue(reUpdatePriceRef, async (snapshot) => {
     const marketStatusData = snapshot.val();
     connectedClientsMarketStatus.forEach((clientId) => {
       if (marketStatusData) {
-        Object.values(marketStatusData).forEach((ms) => {
-          io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, ms);
-        });
+        io.to(clientId).emit(EVENT_NAME.MARKET_STATUS, marketStatusData);
       }
     });
   });
