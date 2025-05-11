@@ -1,0 +1,906 @@
+{
+    "APP_CONFIG": {
+      "general": {
+        "csr_campaign": {
+          "green_up_for_vn": {
+            "enable": false
+          }
+        },
+        "system_maintenance": {
+          "cancelable": true,
+          "description": "Vietcap tiến hành bảo trì và nâng cấp hệ thống từ 19:00 ngày 05/10 đến 12:00 ngày 06/10.",
+          "description_en": "Please aware that Vietcap system will be maintained from  05/10/2024.\\n We are sorry for the inconvinience during the maintenance.",
+          "enable": false,
+          "title": "Bảo trì hệ thống",
+          "title_en": "System maintenance2"
+        }
+      },
+      "mobile": {
+        "campaign": {
+          "green_up": {
+            "isActive": true
+          }
+        },
+        "force_update_app": {
+          "android": {
+            "app_url": "https://play.google.com/store/apps/details?id=com.vcsc.vietcap",
+            "app_version": "2.14.0",
+            "cancelable": false,
+            "enable": false
+          },
+          "ios": {
+            "app_url": "https://apps.apple.com/app/id6446997591",
+            "app_version": "2.10.1",
+            "cancelable": false,
+            "enable": false
+          }
+        },
+        "general_announcement": {
+          "banner_url": "https://firebasestorage.googleapis.com/v0/b/vietcap-uat.appspot.com/o/pexels-photo-39811.jpeg?alt=media&token=8b6ea32a-c888-4dc6-b6c0-f085d39eb584",
+          "button_title": "LearnNow",
+          "cancelable": true,
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          "description_en": "English: Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          "enable": false,
+          "screen": "VietcapIQ",
+          "title": "Thông báo riêng",
+          "title_en": "Private Invitation"
+        },
+        "test": {
+          "banner_url": "https://images.pexels.com/photos/39811/pexels-photo-39811.jpeg",
+          "button_title": "Explore",
+          "cancelable": true,
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+          "description_en": "",
+          "enable": true,
+          "screen": "DigiPartnerOnboarding",
+          "title": "Tính năng mới"
+        }
+      },
+      "web": {
+        "general_announcement": {
+          "action": "/cash-transfer/cash-deposit-qr-code?type=stock",
+          "banner_url": "hello",
+          "banner_url_en": "https://www.shutterstock.com/image-photo/expressing-your-own-thoughts-on-600nw-2296251375.jpg",
+          "button_title": "Tim hiểu thêm",
+          "button_title_en": "Learn More",
+          "cancelable": true,
+          "description": "<p>Này là popup thông báo chung. Mn có thể điền nội dung tùy ý</p>",
+          "description_en": "This is general announcement. The content is dynamic according to our campaign.",
+          "enable": false,
+          "title": "Thông báo",
+          "title_en": "Notice"
+        }
+      }
+    },
+    "BID_ASK": {
+      "askPrices": [
+        {
+          "price": 24550,
+          "volume": 36000
+        },
+        {
+          "price": 24600,
+          "volume": 69800
+        },
+        {
+          "price": 24650,
+          "volume": 73500
+        }
+      ],
+      "bidPrices": [
+        {
+          "price": 24500,
+          "volume": 220300
+        },
+        {
+          "price": 24450,
+          "volume": 113000
+        },
+        {
+          "price": 24400,
+          "volume": 91900
+        }
+      ],
+      "code": "436",
+      "messageType": "TP",
+      "receivedTime": "2025-04-18T07:45:03.133Z",
+      "session": "ENDED",
+      "symbol": "ACB",
+      "time": "2025-04-18T00:30:05.000000Z"
+    },
+    "BID_ASK_BUY_IN": {
+      "askPrices": [
+        {
+          "price": 24550,
+          "volume": 36000
+        },
+        {
+          "price": 24600,
+          "volume": 69800
+        },
+        {
+          "price": 24650,
+          "volume": 73500
+        }
+      ],
+      "bidPrices": [
+        {
+          "price": 24500,
+          "volume": 220300
+        },
+        {
+          "price": 24450,
+          "volume": 113000
+        },
+        {
+          "price": 24400,
+          "volume": 91900
+        }
+      ],
+      "code": "436",
+      "messageType": "TP",
+      "receivedTime": "2025-04-18T07:45:03.133Z",
+      "session": "ENDED",
+      "symbol": "ACB",
+      "time": "2025-04-18T00:30:05.000000Z"
+    },
+    "GAINER_LIST": [
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 35000,
+        "lastPrice20DaysAgo": 38100,
+        "lastPrice5DaysAgo": 37800,
+        "liquidity": 116.4,
+        "marketCap": 231800000,
+        "stockCode": "BHN",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 3200,
+        "lastPrice20DaysAgo": 3400,
+        "lastPrice5DaysAgo": 3000,
+        "liquidity": 41.886,
+        "marketCap": 10000000,
+        "stockCode": "PWA",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 11400,
+        "lastPrice20DaysAgo": 11200,
+        "lastPrice5DaysAgo": 13000,
+        "liquidity": 3.7339999999999995,
+        "marketCap": 16000000,
+        "stockCode": "TNW",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 5300,
+        "lastPrice20DaysAgo": 5400,
+        "lastPrice5DaysAgo": 5200,
+        "liquidity": 100.466,
+        "marketCap": 3000000,
+        "stockCode": "PCF",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 29100,
+        "lastPrice20DaysAgo": 32500,
+        "lastPrice5DaysAgo": 28000,
+        "liquidity": 121.19200000000001,
+        "marketCap": 23000000,
+        "stockCode": "SKV",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 9060,
+        "lastPrice20DaysAgo": 9280,
+        "lastPrice5DaysAgo": 8530,
+        "liquidity": 48.8,
+        "marketCap": 24460792,
+        "stockCode": "VPS",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 9300,
+        "lastPrice20DaysAgo": 10300,
+        "lastPrice5DaysAgo": 10200,
+        "liquidity": 86.93599999999999,
+        "marketCap": 7338138,
+        "stockCode": "D11",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 5800,
+        "lastPrice20DaysAgo": 6200,
+        "lastPrice5DaysAgo": 5900,
+        "liquidity": 1681.6120000000003,
+        "marketCap": 61799972,
+        "stockCode": "C69",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 7700,
+        "lastPrice20DaysAgo": 7900,
+        "lastPrice5DaysAgo": 7900,
+        "liquidity": 139.05599999999998,
+        "marketCap": 17572000,
+        "stockCode": "ICG",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 4400,
+        "lastPrice20DaysAgo": 8400,
+        "lastPrice5DaysAgo": 8000,
+        "liquidity": 0.9280000000000002,
+        "marketCap": 4999933,
+        "stockCode": "PTD",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 6460,
+        "lastPrice20DaysAgo": 7200,
+        "lastPrice5DaysAgo": 6420,
+        "liquidity": 16.6,
+        "marketCap": 12346411,
+        "stockCode": "AAM",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 12200,
+        "lastPrice20DaysAgo": 12200,
+        "lastPrice5DaysAgo": 11950,
+        "liquidity": 6893.2,
+        "marketCap": 45000000,
+        "stockCode": "RYG",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 12500,
+        "lastPrice20DaysAgo": 9400,
+        "lastPrice5DaysAgo": 14000,
+        "liquidity": 10.614,
+        "marketCap": 1558248,
+        "stockCode": "DTB",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 10300,
+        "lastPrice20DaysAgo": 9500,
+        "lastPrice5DaysAgo": 10900,
+        "liquidity": 16.872,
+        "marketCap": 2000000,
+        "stockCode": "VW3",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 3300,
+        "lastPrice20DaysAgo": 3700,
+        "lastPrice5DaysAgo": 3500,
+        "liquidity": 61.480000000000004,
+        "marketCap": 11499999,
+        "stockCode": "BLF",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 58800,
+        "lastPrice20DaysAgo": 68000,
+        "lastPrice5DaysAgo": 55200,
+        "liquidity": 363.8,
+        "marketCap": 34727465,
+        "stockCode": "DMC",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 14900,
+        "lastPrice5DaysAgo": 17100,
+        "liquidity": 225.97600000000003,
+        "marketCap": 3800000,
+        "stockCode": "MBT",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 23400,
+        "lastPrice20DaysAgo": 25900,
+        "lastPrice5DaysAgo": 20700,
+        "liquidity": 386.746,
+        "marketCap": 200000000,
+        "stockCode": "TID",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 56000,
+        "lastPrice20DaysAgo": 65000,
+        "lastPrice5DaysAgo": 57000,
+        "liquidity": 91.8,
+        "marketCap": 12832437,
+        "stockCode": "SVI",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 3300,
+        "lastPrice20DaysAgo": 4700,
+        "lastPrice5DaysAgo": 3400,
+        "liquidity": 1294.542,
+        "marketCap": 31434237,
+        "stockCode": "GKM",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 13350,
+        "lastPrice20DaysAgo": 17600,
+        "lastPrice5DaysAgo": 13200,
+        "liquidity": 26391.4,
+        "marketCap": 121979900,
+        "stockCode": "NTL",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 12800,
+        "lastPrice20DaysAgo": 13200,
+        "lastPrice5DaysAgo": 13600,
+        "liquidity": 34.07599999999999,
+        "marketCap": 682767475,
+        "stockCode": "DTK",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 3300,
+        "lastPrice20DaysAgo": 3100,
+        "lastPrice5DaysAgo": 3000,
+        "liquidity": 1457.234,
+        "marketCap": 33139996,
+        "stockCode": "VHE",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 32300,
+        "lastPrice20DaysAgo": 38800,
+        "lastPrice5DaysAgo": 39300,
+        "liquidity": 26.296,
+        "marketCap": 15008492,
+        "stockCode": "IST",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 20800,
+        "lastPrice20DaysAgo": 12299.94,
+        "lastPrice5DaysAgo": 12300,
+        "liquidity": 15.453999999999999,
+        "marketCap": 6824996,
+        "stockCode": "DCG",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 9100,
+        "lastPrice20DaysAgo": 8500,
+        "lastPrice5DaysAgo": 9500,
+        "liquidity": 11.472000000000001,
+        "marketCap": 38000000,
+        "stockCode": "VHD",
+        "topStockType": "GAINER_1_D",
+        "vn30": false
+      }
+    ],
+    "INDEX": {
+      "change": 3.3599999999999,
+      "changePercent": 0.2598105548037812,
+      "code": "I#I3",
+      "estimatedChange": 3.485364332708671,
+      "estimatedFsp": 1293.25,
+      "price": 1296.61,
+      "symbol": "VN30",
+      "time": "2025-04-17T02:32:22.000Z",
+      "totalShares": 34279703,
+      "totalStockCeiling": 0,
+      "totalStockDecline": 14,
+      "totalStockFloor": 0,
+      "totalStockIncrease": 15,
+      "totalStockNoChange": 1,
+      "totalValue": 1187801
+    },
+    "LOSER_LIST": [
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 6300,
+        "lastPrice20DaysAgo": 5300,
+        "lastPrice5DaysAgo": 5000,
+        "liquidity": 78.064,
+        "marketCap": 16000000,
+        "stockCode": "HBH",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 13000,
+        "lastPrice20DaysAgo": 15200,
+        "lastPrice5DaysAgo": 18900,
+        "liquidity": 127.07600000000002,
+        "marketCap": 11774180,
+        "stockCode": "YBC",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 28400,
+        "lastPrice20DaysAgo": 20300,
+        "lastPrice5DaysAgo": 22400,
+        "liquidity": 2720.726,
+        "marketCap": 10800000,
+        "stockCode": "MGC",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 3000,
+        "lastPrice20DaysAgo": 5300,
+        "lastPrice5DaysAgo": 3800,
+        "liquidity": 140.11,
+        "marketCap": 1800000,
+        "stockCode": "VE8",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 17200,
+        "lastPrice20DaysAgo": 13800,
+        "lastPrice5DaysAgo": 17200,
+        "liquidity": 17.594,
+        "marketCap": 10800000,
+        "stockCode": "SPV",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 148700,
+        "lastPrice20DaysAgo": 232800,
+        "lastPrice5DaysAgo": 141700,
+        "liquidity": 17616.879999999997,
+        "marketCap": 23999980,
+        "stockCode": "NTC",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 6800,
+        "lastPrice20DaysAgo": 6700,
+        "lastPrice5DaysAgo": 7100,
+        "liquidity": 6.812,
+        "marketCap": 29450000,
+        "stockCode": "FCS",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 28400,
+        "lastPrice20DaysAgo": 29200,
+        "lastPrice5DaysAgo": 30000,
+        "liquidity": 55.720000000000006,
+        "marketCap": 3900000,
+        "stockCode": "PIA",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 16600,
+        "lastPrice20DaysAgo": 20600,
+        "lastPrice5DaysAgo": 16300,
+        "liquidity": 2172.788,
+        "marketCap": 17679982,
+        "stockCode": "AVG",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 60600,
+        "lastPrice20DaysAgo": 63000,
+        "lastPrice5DaysAgo": 64000,
+        "liquidity": 136.776,
+        "marketCap": 6000000,
+        "stockCode": "HEC",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 45900,
+        "lastPrice20DaysAgo": 58300,
+        "lastPrice5DaysAgo": 45350,
+        "liquidity": 134143,
+        "marketCap": 420192309,
+        "stockCode": "GMD",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 30000,
+        "lastPrice20DaysAgo": 30850,
+        "lastPrice5DaysAgo": 28500,
+        "liquidity": 49.6,
+        "marketCap": 98998266,
+        "stockCode": "PGD",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 20000,
+        "lastPrice20DaysAgo": 17500,
+        "lastPrice5DaysAgo": 20800,
+        "liquidity": 7.15,
+        "marketCap": 6432453,
+        "stockCode": "PTX",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 34500,
+        "lastPrice20DaysAgo": 40200,
+        "lastPrice5DaysAgo": 35300,
+        "liquidity": 109.10999999999999,
+        "marketCap": 8315482,
+        "stockCode": "NAS",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 25100,
+        "lastPrice20DaysAgo": 28012.65,
+        "lastPrice5DaysAgo": 28000,
+        "liquidity": 13.834,
+        "marketCap": 3036436,
+        "stockCode": "SDN",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 40000,
+        "lastPrice20DaysAgo": 47000,
+        "lastPrice5DaysAgo": 35300,
+        "liquidity": 14.042000000000002,
+        "marketCap": 1800000,
+        "stockCode": "CCV",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 36500,
+        "lastPrice20DaysAgo": 34081.79,
+        "lastPrice5DaysAgo": 34600,
+        "liquidity": 646.8,
+        "marketCap": 22083392,
+        "stockCode": "VDP",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 15500,
+        "lastPrice20DaysAgo": 12299.76,
+        "lastPrice5DaysAgo": 10800,
+        "liquidity": 3.282,
+        "marketCap": 4235290,
+        "stockCode": "PAI",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HNX",
+        "hnx30": false,
+        "lastPrice1DayAgo": 15900,
+        "lastPrice20DaysAgo": 17100,
+        "lastPrice5DaysAgo": 14900,
+        "liquidity": 204.88400000000001,
+        "marketCap": 12120000,
+        "stockCode": "GIC",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 57100,
+        "lastPrice20DaysAgo": 57000,
+        "lastPrice5DaysAgo": 63900,
+        "liquidity": 177.13799999999998,
+        "marketCap": 12500000,
+        "stockCode": "TED",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 14700,
+        "lastPrice20DaysAgo": 14000,
+        "lastPrice5DaysAgo": 13000,
+        "liquidity": 57.577999999999996,
+        "marketCap": 40000000,
+        "stockCode": "PSP",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 21300,
+        "lastPrice20DaysAgo": 16614.52,
+        "lastPrice5DaysAgo": 18200,
+        "liquidity": 1.23,
+        "marketCap": 1904400,
+        "stockCode": "HBD",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 10100,
+        "lastPrice20DaysAgo": 10200,
+        "lastPrice5DaysAgo": 9950,
+        "liquidity": 12.8,
+        "marketCap": 54632348,
+        "stockCode": "TN1",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "HOSE",
+        "hnx30": false,
+        "lastPrice1DayAgo": 56500,
+        "lastPrice20DaysAgo": 79000,
+        "lastPrice5DaysAgo": 61000,
+        "liquidity": 52307,
+        "marketCap": 1035000000,
+        "stockCode": "BCM",
+        "topStockType": "LOSER_1_D",
+        "vn30": true
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 6600,
+        "lastPrice20DaysAgo": 5600,
+        "lastPrice5DaysAgo": 5500,
+        "liquidity": 387.90999999999997,
+        "marketCap": 3851880,
+        "stockCode": "TS3",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      },
+      {
+        "group": "UPCOM",
+        "hnx30": false,
+        "lastPrice1DayAgo": 24900,
+        "lastPrice20DaysAgo": 25800,
+        "lastPrice5DaysAgo": 28100,
+        "liquidity": 42.038,
+        "marketCap": 8999622,
+        "stockCode": "MGG",
+        "topStockType": "LOSER_1_D",
+        "vn30": false
+      }
+    ],
+    "MARKET_STATUS": {
+      "BOND": {
+        "marketCode": "HNX",
+        "messageType": "BI",
+        "status": "CLOSED",
+        "time": "2025-04-15T08:21:15.000Z",
+        "totalStockDecline": 136,
+        "totalStockIncrease": 38,
+        "totalStockNoChange": 48
+      },
+      "DERIVATIVES": {
+        "marketCode": "DERIVATIVES",
+        "messageType": "BI",
+        "status": "CLOSED",
+        "time": "2025-04-15T07:45:12.000Z",
+        "totalStockDecline": 0,
+        "totalStockIncrease": 0,
+        "totalStockNoChange": 0
+      },
+      "HNX": {
+        "marketCode": "HNX",
+        "messageType": "BI",
+        "status": "CLOSED",
+        "time": "2025-04-15T08:21:15.000Z",
+        "totalStockDecline": 136,
+        "totalStockIncrease": 38,
+        "totalStockNoChange": 48
+      },
+      "HOSE": {
+        "marketCode": "HOSE",
+        "messageType": "SC",
+        "receivedTime": "2025-04-15T08:44:39.420Z",
+        "status": "CLOSED"
+      },
+      "UPCOM": {
+        "marketCode": "UPCOM",
+        "messageType": "BI",
+        "status": "CLOSED",
+        "time": "2025-04-15T08:21:15.000Z",
+        "totalStockDecline": 176,
+        "totalStockIncrease": 126,
+        "totalStockNoChange": 93
+      }
+    },
+    "MATCH_PRICE": {
+      "accumulatedValue": 0,
+      "accumulatedVolume": 0,
+      "avgMatchPrice": 0,
+      "board": "HNX",
+      "ceilingPrice": 39000,
+      "code": "CAP",
+      "currentRoom": 0,
+      "floorPrice": 32000,
+      "foreignBuyValue": 0,
+      "foreignBuyVolume": 0,
+      "foreignSellValue": 0,
+      "foreignSellVolume": 0,
+      "highest": 0,
+      "lowest": 0,
+      "marketCode": "HNX",
+      "matchPrice": 0,
+      "matchType": "unknown",
+      "matchVol": 0,
+      "referencePrice": 35500,
+      "session": "LO_MORNING",
+      "stockType": "STOCK",
+      "symbol": "CAP",
+      "time": "2025-04-17T01:05:04.000000Z",
+      "totalBuyOrders": 0,
+      "totalSellOrders": 0
+    },
+    "MATCH_PRICE_BUY_IN": {
+      "accumulatedValue": 0,
+      "accumulatedVolume": 0,
+      "avgMatchPrice": 0,
+      "board": "HNX",
+      "ceilingPrice": 39000,
+      "code": "CAP",
+      "currentRoom": 0,
+      "floorPrice": 32000,
+      "foreignBuyValue": 0,
+      "foreignBuyVolume": 0,
+      "foreignSellValue": 0,
+      "foreignSellVolume": 0,
+      "highest": 0,
+      "lowest": 0,
+      "marketCode": "HNX",
+      "matchPrice": 0,
+      "matchType": "unknown",
+      "matchVol": 0,
+      "referencePrice": 35500,
+      "session": "LO_MORNING",
+      "stockType": "STOCK",
+      "symbol": "CAP",
+      "time": "2025-04-17T01:05:04.000000Z",
+      "totalBuyOrders": 0,
+      "totalSellOrders": 0
+    },
+    "PROXY_CONFIG": {
+      "enableFakeData": false,
+      "fakeData": [
+        {
+          "data": "EMPTY_ARRAY",
+          "url": "https://trading.vietcap.com.vn/api/chart/OHLCChart/gap"
+        }
+      ]
+    },
+    "SOCKET_CONFIG": {
+      "reUpdatePrice": false,
+      "resetDataFirebase": false,
+      "speedPrice": 10,
+      "stopPrice": false
+    }
+  }
+  
