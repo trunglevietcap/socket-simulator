@@ -83,7 +83,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on(EVENT_NAME.APP_CONFIG, (msg) => {
-    connectedClientsAppConfig = connectedClientsMarketStatus.filter(
+    connectedClientsAppConfig = connectedClientsAppConfig.filter(
       (id) => id !== socket.id
     );
     connectedClientsAppConfig.push(socket.id);
@@ -286,6 +286,9 @@ io.on("connection", (socket) => {
       (item) => socket.id !== item.id && !item?.symbols?.length
     );
     connectedClientsMarketStatus = connectedClientsMarketStatus.filter(
+      (item) => socket.id !== item.id
+    );
+    connectedMarketDataTopStockPricesChange = connectedMarketDataTopStockPricesChange.filter(
       (item) => socket.id !== item.id
     );
   });
