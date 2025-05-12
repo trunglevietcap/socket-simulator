@@ -14,6 +14,7 @@ export const EVENT_NAME = {
   APP_CONFIG: "app-config",
   TOP_STOCK_GROUP_STREAMING: "top-stock-group-streaming",
   TOP_STOCK_CHANGE_STREAMING: "top-stock-change-streaming",
+  MARKET_DATA_TOP_STOCK_PRICES_CHANGE: "market-data-top-stock-prices-change",
 };
 
 export const BOARD = {
@@ -22,7 +23,7 @@ export const BOARD = {
   UPCOM: "UPCOM",
   DERIVATIVES: "DERIVATIVES",
   BOND: "BOND",
-  HSX: 'HSX'
+  HSX: "HSX",
 };
 
 export const MESSAGE_ALL_CLIENT_SEND = '[{"type":"all"}]';
@@ -55,5 +56,5 @@ export const TOP_STOCK_TYPE = {
   LOSER_1_M: "LOSER_1_M",
   GAINER_1_D: "GAINER_1_D",
   GAINER_1_W: "GAINER_1_W",
-  GAINER_1_M: "GAINER_1_M"
-}
+  GAINER_1_M: "GAINER_1_M",
+};

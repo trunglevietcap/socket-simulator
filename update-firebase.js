@@ -11,6 +11,7 @@ import {
   indexRef,
   matchPriceBuyInRef,
   bidAskBuyInRef,
+  marketTopStockChangeRef,
 } from "./src/firebase/firebase-config.js";
 import { APP_CONFIG } from "./src/data/app-config.js";
 import { MARKET_STATUS_ALL } from "./src/data/market-status.js";
@@ -61,6 +62,12 @@ export const saveFirebaseData = async () => {
 
     await set(indexRef, INDEX);
     console.log("INDEX saved");
+
+    await set(marketTopStockChangeRef, {
+      dataType: "SYMBOL",
+      time: "2025-05-12T01:46:42.973Z",
+    });
+    console.log("MARKET_DATA_TOP_STOCK_CHANGE saved");
   } catch (error) {
     console.error("Error saving data to Firebase:", error);
   }

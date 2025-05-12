@@ -21,6 +21,7 @@ import {
   marketStatusHOSERef,
   marketStatusUPCOMRef,
   marketStatusDERIVATIVESRef,
+  marketTopStockChangeRef,
 } from "./src/firebase/firebase-config.js";
 
 const { load } = protobuf;
@@ -39,6 +40,7 @@ let connectedClientsAppConfig = [];
 let connectedClientTopStockChange = [];
 let connectedClientTopStockGroup = [];
 let connectedClientIndex = [];
+let connectedMarketDataTopStockPricesChange = [];
 
 const priceInfoService = PriceSocketService();
 
@@ -98,6 +100,12 @@ io.on("connection", (socket) => {
       (id) => id !== socket.id
     );
     connectedClientTopStockGroup.push(socket.id);
+  });
+
+  socket.on(EVENT_NAME.MARKET_DATA_TOP_STOCK_PRICES_CHANGE, (msg) => {
+    connectedMarketDataTopStockPricesChange =
+      connectedMarketDataTopStockPricesChange.filter((id) => id !== socket.id);
+    connectedMarketDataTopStockPricesChange.push(socket.id);
   });
 
   socket.on(EVENT_NAME.MATCH_PRICE, (msg) => {
@@ -368,6 +376,12 @@ onValue(socketConfigRef, (snapshot) => {
   speed = configData?.speedPrice || 1;
   const stop = configData?.stopPrice;
   stop ? handleStopSocketPrice() : handleUpdateSpeed();
+});
+onValue(marketTopStockChangeRef, (snapshot) => {
+  const data = snapshot.val();
+  connectedMarketDataTopStockPricesChange.forEach((clientId) => {
+    io.to(clientId).emit(EVENT_NAME.MARKET_DATA_TOP_STOCK_PRICES_CHANGE, data);
+  });
 });
 
 onValue(reUpdatePriceRef, async (snapshot) => {
