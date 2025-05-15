@@ -23,6 +23,7 @@ import {
   marketStatusDERIVATIVESRef,
   marketTopStockChangeRef,
 } from "./src/firebase/firebase-config.js";
+import './order-book.js'
 
 const { load } = protobuf;
 const app = express();
@@ -293,7 +294,7 @@ io.on("connection", (socket) => {
     );
   });
 });
-server.listen(8080, () => {
+server.listen(8081, () => {
   console.log("Server is listening");
 });
 
