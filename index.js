@@ -23,13 +23,16 @@ import {
   marketStatusDERIVATIVESRef,
   marketTopStockChangeRef,
 } from "./src/firebase/firebase-config.js";
-import './order-book.js'
+import "./order-book.js";
+import {server} from './server.js'
+
 
 const { load } = protobuf;
-const app = express();
-export const server = createServer(app);
 const io = new Server(server, {
   path: "/ws/price/socket.io",
+});
+server.listen(8080, () => {
+  console.log("Server is listening");
 });
 
 let connectedClientsMarketStatus = [];
@@ -289,13 +292,11 @@ io.on("connection", (socket) => {
     connectedClientsMarketStatus = connectedClientsMarketStatus.filter(
       (item) => socket.id !== item.id
     );
-    connectedMarketDataTopStockPricesChange = connectedMarketDataTopStockPricesChange.filter(
-      (item) => socket.id !== item.id
-    );
+    connectedMarketDataTopStockPricesChange =
+      connectedMarketDataTopStockPricesChange.filter(
+        (item) => socket.id !== item.id
+      );
   });
-});
-server.listen(8081, () => {
-  console.log("Server is listening");
 });
 
 // Firebase
@@ -503,3 +504,4 @@ function handleUpdateSpeed() {
     ];
   }
 }
+
