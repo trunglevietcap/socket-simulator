@@ -27,7 +27,7 @@ import './order-book.js'
 
 const { load } = protobuf;
 const app = express();
-const server = createServer(app);
+export const server = createServer(app);
 const io = new Server(server, {
   path: "/ws/price/socket.io",
 });

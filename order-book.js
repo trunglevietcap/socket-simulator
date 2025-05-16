@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
 import { onValue } from "firebase/database";
 import { orderBookRef } from "./src/firebase/firebase-config.js";
+import { server } from "./index.js";
 
 const io = new Server(server, {
   path: "/ws/order-service/socket.io",
