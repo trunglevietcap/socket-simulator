@@ -1,11 +1,7 @@
-import express from "express";
-import { createServer } from "http";
 import { Server } from "socket.io";
-import { onValue, set } from "firebase/database";
+import { onValue } from "firebase/database";
 import { orderBookRef } from "./src/firebase/firebase-config.js";
 
-const app = express();
-const server = createServer(app);
 const io = new Server(server, {
   path: "/ws/order-service/socket.io",
 });
@@ -20,9 +16,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     connectedOrderBook = connectedOrderBook.filter((id) => socket.id !== id);
   });
-});
-server.listen(8080, () => {
-  console.log("Server is listening");
 });
 
 // Firebase
