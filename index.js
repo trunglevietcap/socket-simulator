@@ -31,9 +31,6 @@ const { load } = protobuf;
 const io = new Server(server, {
   path: "/ws/price/socket.io",
 });
-server.listen(8080, () => {
-  console.log("Server is listening");
-});
 
 let connectedClientsMarketStatus = [];
 let connectedClientsPrice = [];
