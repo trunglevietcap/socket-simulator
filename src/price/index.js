@@ -124,6 +124,7 @@ export const PriceSocketService = () => {
         foreignBuyVolume,
         foreignSellVolume,
         matchVol,
+        isMatchPrice: true
       },
     };
     return _priceInfo[symbolRandom].matchPrice;

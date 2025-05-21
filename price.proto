@@ -50,6 +50,7 @@ message MatchPriceMessage {
     double totalRoom=23;
     double accumulatedValue=24;
     string matchType=25;
+    bool isMatchPrice=26;
     double bidCount = 29;
     double askCount = 30;
 }
