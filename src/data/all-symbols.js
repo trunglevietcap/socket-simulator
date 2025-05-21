@@ -1591,6 +1591,7 @@ export const ALL_SYMBOL = [
   "XMD",
   "CQT",
   "YEG",
+  "VN30F2506"
 ];
 
 export const VN30_OBJECT = {
