@@ -1,6 +1,9 @@
 import { Server } from "socket.io";
 import { onValue } from "firebase/database";
-import { orderBookRef } from "./src/firebase/firebase-config.js";
+import {
+  orderBookRef,
+  orderBookDerivativeRef,
+} from "./src/firebase/firebase-config.js";
 import { server } from "./server.js";
 
 const io = new Server(server, {
@@ -28,11 +31,15 @@ ioDerivative.on("connection", (socket) => {
     "SUCCESS",
     "HELLO WOLD - socket order book derivative connected!"
   );
-  connectedOrderBookDerivative = connectedOrderBookDerivative.filter((id) => id !== socket.id);
+  connectedOrderBookDerivative = connectedOrderBookDerivative.filter(
+    (id) => id !== socket.id
+  );
   connectedOrderBookDerivative.push(socket.id);
 
   socket.on("disconnect", () => {
-    connectedOrderBookDerivative = connectedOrderBookDerivative.filter((id) => socket.id !== id);
+    connectedOrderBookDerivative = connectedOrderBookDerivative.filter(
+      (id) => socket.id !== id
+    );
   });
 });
 // Firebase
@@ -44,7 +51,7 @@ onValue(orderBookRef, (snapshot) => {
   });
 });
 
-onValue(orderBookRef, (snapshot) => {
+onValue(orderBookDerivativeRef, (snapshot) => {
   const data = snapshot.val();
   connectedOrderBookDerivative.forEach((id) => {
     io.to(id).emit("order-book-streaming", data);

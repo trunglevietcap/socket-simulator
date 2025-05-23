@@ -1,3 +1,3 @@
 http://localhost:8080
 
-https://socket-simulator-production.up.railway.app
+https://socket-simulator.onrender.com
