@@ -17,6 +17,7 @@
     "firebase": "^11.6.0",
     "nodemon": "^3.1.9",
     "protobufjs": "^7.4.0",
+    "serverless-http": "^3.2.0",
     "socket.io": "^4.8.1"
   },
   "type": "module",

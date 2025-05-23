@@ -1,8 +1,12 @@
 import express from "express";
-import { createServer } from "http";
+import serverless from "serverless-http";
 
 const app = express();
-export const server = createServer(app);
-server.listen(8080, () => {
-    console.log("Server is listening");
-  });
+
+// Ví dụ route
+app.get("/", (req, res) => {
+  res.send("Hello from Serverless Express!");
+});
+
+// Export handler để Railway gọi khi có request
+export const handler = serverless(app);
