@@ -17,6 +17,7 @@ export const FIREBASE_DB_NAME = {
   INDEX: "INDEX",
   MARKET_DATA_TOP_STOCK_CHANGE: "MARKET_DATA_TOP_STOCK_CHANGE",
   ORDER_BOOK: "ORDER_BOOK",
+  ORDER_BOOK_DERIVATIVE: "ORDER_BOOK_DERIVATIVE",
 };
 
 const firebaseConfig = {
@@ -76,7 +77,6 @@ export const reUpdatePriceRef = ref(
   `${FIREBASE_DB_NAME.SOCKET_CONFIG}/reUpdatePrice`
 );
 
-export const orderBookRef = ref(
-  db,
-  FIREBASE_DB_NAME.ORDER_BOOK
-);
+export const orderBookRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK);
+
+export const orderBookDerivativeRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK);
