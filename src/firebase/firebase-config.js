@@ -79,4 +79,4 @@ export const reUpdatePriceRef = ref(
 
 export const orderBookRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK);
 
-export const orderBookDerivativeRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK);
+export const orderBookDerivativeRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK_DERIVATIVE);

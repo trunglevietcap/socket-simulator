@@ -47,6 +47,7 @@ ioDerivative.on("connection", (socket) => {
 onValue(orderBookRef, (snapshot) => {
   const data = snapshot.val();
   connectedOrderBook.forEach((id) => {
+    console.log(`order-book-streaming-${id}:`, data);
     io.to(id).emit("order-book-streaming", data);
   });
 });
@@ -54,6 +55,7 @@ onValue(orderBookRef, (snapshot) => {
 onValue(orderBookDerivativeRef, (snapshot) => {
   const data = snapshot.val();
   connectedOrderBookDerivative.forEach((id) => {
-    io.to(id).emit("order-book-streaming", data);
+    console.log(`derivative-order-book-streaming-${id}:`, data);
+    ioDerivative.to(id).emit("derivative-order-book-streaming", data);
   });
 });
