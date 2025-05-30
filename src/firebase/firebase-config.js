@@ -18,6 +18,8 @@ export const FIREBASE_DB_NAME = {
   MARKET_DATA_TOP_STOCK_CHANGE: "MARKET_DATA_TOP_STOCK_CHANGE",
   ORDER_BOOK: "ORDER_BOOK",
   ORDER_BOOK_DERIVATIVE: "ORDER_BOOK_DERIVATIVE",
+  SOCKET_CHART: "SOCKET_CHART",
+  SOCKET_CHART_CONFIG: "SOCKET_CHART_CONFIG",
 };
 
 const firebaseConfig = {
@@ -79,4 +81,25 @@ export const reUpdatePriceRef = ref(
 
 export const orderBookRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK);
 
-export const orderBookDerivativeRef = ref(db, FIREBASE_DB_NAME.ORDER_BOOK_DERIVATIVE);
+export const orderBookDerivativeRef = ref(
+  db,
+  FIREBASE_DB_NAME.ORDER_BOOK_DERIVATIVE
+);
+
+export const socketChartRef = ref(db, FIREBASE_DB_NAME.SOCKET_CHART);
+export const socketChartResetRef = ref(
+  db,
+  `${FIREBASE_DB_NAME.SOCKET_CHART}/reset`
+);
+export const socketChartConfigRef = ref(db, FIREBASE_DB_NAME.SOCKET_CHART_CONFIG);
+export const socketChartConfigResetRef = ref(
+  db,
+  `${FIREBASE_DB_NAME.SOCKET_CHART_CONFIG}/reset`
+);
+
+export const socketChartConfigEnableRef = ref(
+  db,
+  `${FIREBASE_DB_NAME.SOCKET_CHART_CONFIG}/enable`
+);
+
+

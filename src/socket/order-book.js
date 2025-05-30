@@ -3,8 +3,8 @@ import { onValue } from "firebase/database";
 import {
   orderBookRef,
   orderBookDerivativeRef,
-} from "./src/firebase/firebase-config.js";
-import { server } from "./server.js";
+} from "./../firebase/firebase-config.js";
+import { server } from "../server.js";
 
 const io = new Server(server, {
   path: "/ws/order-service/socket.io",

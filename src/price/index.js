@@ -7,6 +7,7 @@ import {
 import { ALL_SYMBOL, VN30_OBJECT, HNX30_OBJECT } from "../data/all-symbols.js";
 import { BASE_URL } from "../endPoint.js";
 import { SYMBOLS_INFO } from "./../data/symbols-info.js";
+import { fetchData } from "./../utils.js";
 export const PriceSocketService = () => {
   const _priceInfo = {};
   const _symbolInfo = {};
@@ -18,7 +19,7 @@ export const PriceSocketService = () => {
   }
   let _symbolsSubscriptionMatchPrice = [];
   let _symbolsSubscriptionBidAsk = [];
-  let _symbolsSubscriptionIndex= [];
+  let _symbolsSubscriptionIndex = [];
 
   const _cachePriceInfo = (priceList) => {
     priceList.forEach((item) => {
@@ -124,7 +125,7 @@ export const PriceSocketService = () => {
         foreignBuyVolume,
         foreignSellVolume,
         matchVol,
-        isMatchPrice: true
+        isMatchPrice: true,
       },
     };
     return _priceInfo[symbolRandom].matchPrice;
@@ -153,25 +154,14 @@ export const PriceSocketService = () => {
   };
 
   const handleGetPrice = async () => {
-    try {
-      const response = await fetch(`${BASE_URL}/api/price/symbols/getList`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          symbols: ALL_SYMBOL,
-        }),
-      });
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
+    const data = await fetchData(
+      "POST",
+      `${BASE_URL}/api/price/symbols/getList`,
+      {
+        symbols: ALL_SYMBOL,
       }
-      const data = await response.json();
-      _cachePriceInfo(data);
-      return data;
-    } catch (error) {
-      console.log("Get price error!", error);
-    }
+    );
+    _cachePriceInfo(data);
   };
 
   const getPriceInfo = (symbol) => {
@@ -336,7 +326,7 @@ export const PriceSocketService = () => {
     randomPriceAndBidAsk,
     getRandomTopStockChange,
     getRandomTopStockGroup,
-    setSymbolsSubscriptionIndex
+    setSymbolsSubscriptionIndex,
   };
 };
 

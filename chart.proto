@@ -1,0 +1,15 @@
+package chartPackage;
+syntax = "proto3";
+
+message ChartMessage {
+    string symbol = 1;
+    string timeFrame = 2;
+    double t = 3;
+    double o = 4;
+    double h = 5;
+    double l = 6;
+    double c = 7;
+    double v = 8;
+    double accumulatedVolume = 9;
+    double accumulatedValue = 10;
+}
