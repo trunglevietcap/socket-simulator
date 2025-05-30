@@ -13,19 +13,30 @@ export function throttle(fn, delay) {
 
 export const fetchData = async (method, url, payload) => {
   try {
-    const response = await fetch(url, {
-      method: method,
+    const options = {
+      method,
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload),
-    });
-    if (!response.ok) {
-      throw new Error("Network response was not ok");
+    };
+
+    if (method !== "GET" && payload) {
+      options.body = JSON.stringify(payload);
     }
+
+    const response = await fetch(url, options);
+
+    if (!response.ok) {
+      const errorText = await response.text(); // Get response body (if any)
+      throw new Error(
+        `Network response was not ok. Status: ${response.status} ${response.statusText}. Details: ${errorText}`
+      );
+    }
+
     const data = await response.json();
     return data;
   } catch (error) {
-    console.log("Get price error!", error);
+    console.error("Fetch error:", error);
+    throw error; // rethrow to let caller handle it if needed
   }
 };

@@ -22,7 +22,7 @@ export const PriceSocketService = () => {
   let _symbolsSubscriptionIndex = [];
 
   const _cachePriceInfo = (priceList) => {
-    priceList.forEach((item) => {
+    priceList?.forEach?.((item) => {
       _priceInfo[item.listingInfo.symbol] = item;
     });
   };
