@@ -28,15 +28,13 @@ export const fetchData = async (method, url, payload) => {
 
     if (!response.ok) {
       const errorText = await response.text(); // Get response body (if any)
-      throw new Error(
-        `Network response was not ok. Status: ${response.status} ${response.statusText}. Details: ${errorText}`
-      );
+      console.log(`Network response was not ok. Status: ${response.status} ${response.statusText}. Details: ${errorText}`)
+      return 
     }
 
     const data = await response.json();
     return data;
   } catch (error) {
     console.error("Fetch error:", error);
-    throw error; // rethrow to let caller handle it if needed
   }
 };
